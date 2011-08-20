@@ -1,0 +1,9 @@
+.bundle
+db/*.sqlite3
+log/
+log/*.log
+tmp/
+tmp/*
+.sass-cache/
+Gemfile.lock
+
