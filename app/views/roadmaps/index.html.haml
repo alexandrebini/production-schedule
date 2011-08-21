@@ -1,0 +1,19 @@
+%h1 Listing roadmaps
+
+%table
+  %tr
+    %th Product
+    %th
+    %th
+    %th
+
+  - @roadmaps.each do |roadmap|
+    %tr
+      %td= roadmap.product
+      %td= link_to 'Show', roadmap
+      %td= link_to 'Edit', edit_roadmap_path(roadmap)
+      %td= link_to 'Destroy', roadmap, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Roadmap', new_roadmap_path

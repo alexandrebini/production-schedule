@@ -1,0 +1,16 @@
+= simple_form_for(@roadmap) do |f|
+  - if @roadmap.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@roadmap.errors.count, "error")
+        prohibited this roadmap from being saved:
+
+      %ul
+        - @roadmap.errors.full_messages.each do |msg|
+          %li= msg
+
+  .inputs
+    = f.association :product
+
+  .actions
+    = f.button :submit

@@ -11,12 +11,15 @@ end
 
 module ProductionScheduling
   class Application < Rails::Application
+    require "#{Rails.root}/lib/ga/ruby/ga.rb"
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
+    config.autoload_paths += %W(#{Rails.root}/lib/ga/ruby/ga.rb)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -27,7 +30,7 @@ module ProductionScheduling
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
+    config.time_zone = 'Brasilia'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
@@ -41,5 +44,20 @@ module ProductionScheduling
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
+    config.after_initialize do
+      Date::DATE_FORMATS[:default] = lambda { |date| I18n.l(date) }
+      Time::DATE_FORMATS[:default] = lambda { |date| I18n.l(date) }
+      Haml::Template.options[:format] = :xhtml
+    end
+
+    config.generators do |g|
+      g.template_engine :haml
+      g.test_framework :rspec, :fixture => false, :views => false, :routing => false, :controllers => false, :helpers => false
+      g.fixture_replacement :machinist
+      g.stylesheets false
+    end
+
   end
 end
+

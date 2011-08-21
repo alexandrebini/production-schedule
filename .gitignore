@@ -6,4 +6,5 @@ tmp/
 tmp/*
 .sass-cache/
 Gemfile.lock
+doc/DaniloSipoliSanches/SimultaneousScheduling/bin
 

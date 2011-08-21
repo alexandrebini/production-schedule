@@ -5,10 +5,13 @@ guard 'bundler' do
 	watch('Gemfile')
 end
 
-guard 'rspec', :version => 2 do
+guard 'rspec', :version => 2, :cli => "--color --format nested --fail-fast --drb"  do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
+
+  # Migrations
+  watch(%r{^db/migrate/(.+)\.rb$})                    { `RAILS_ENV=test rake db:drop && RAILS_ENV=test rake db:create && RAILS_ENV=test rake db:migrate` }
 
   # Rails example
   watch(%r{^spec/.+_spec\.rb$})

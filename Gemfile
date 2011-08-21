@@ -21,6 +21,7 @@ group :development do
   gem 'capistrano', '2.8.0'
   gem 'active_reload', '0.3.0'
   gem 'passenger', '3.0.8'
+  gem 'haml-rails'
 end
 
 group :test do

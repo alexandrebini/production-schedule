@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Product:
+  = @roadmap.product
+
+= link_to 'Edit', edit_roadmap_path(@roadmap)
+\|
+= link_to 'Back', roadmaps_path
