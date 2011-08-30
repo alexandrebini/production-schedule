@@ -8,9 +8,12 @@ module GARuby
         instance_variable_set("@#{k}", v) unless v.nil?
       end
       @generations = 0
-      @chromosomes = Array.new(@length){ Chromosome.random }
+      @chromosomes = Array.new(@length){ Chromosome.random } unless args[:chromosomes]
     end
 
+    def best
+      @chromosomes.max_by{ |chromosome| chromosome.fitness }
+    end
 
   end
 end

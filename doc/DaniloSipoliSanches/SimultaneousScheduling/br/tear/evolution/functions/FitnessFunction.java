@@ -464,11 +464,8 @@ public class FitnessFunction implements IFitnessFunction {
 						/*
 						 * Manda o AGV da ultima maquina no roteiro para Unload
 						 */
-						agvTime = travelTime
-								.getTempo((Object) Integer
-										.parseInt(String.valueOf(selectMachine)
-												+ String.valueOf(maquina
-														.sizeMaq() + 1)));
+						agvTime = travelTime.getTempo((Object) Integer.parseInt(String.valueOf(selectMachine)
+												+ String.valueOf(maquina.sizeMaq() + 1)));
 
 						tcAGV += agvTime;
 

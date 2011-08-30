@@ -18,6 +18,13 @@ describe GARuby::Gene do
     gene.to_a.should == [product.id, roadmap.id]
   end
 
+  it 'is cloneable' do
+    first_gene = GARuby::Gene.new(:product => Product.make, :roadmap => Roadmap.make)
+    second_gene = first_gene.clone
+    first_gene.should_not == second_gene
+    first_gene.object_id.should_not == second_gene.object_id
+  end
+
   context 'swap' do
     before(:each) do
       @product = GARuby::Models::Product.make!
@@ -25,17 +32,17 @@ describe GARuby::Gene do
     end
 
     it 'should be able to swap the roadmap' do
-      lambda { @gene.swap! }.should_not raise_error
+      lambda { @gene.swap_roadmap! }.should_not raise_error
     end
 
     it 'should be able to specify the new roadmap' do
-      @gene.swap!(@product.roadmaps.last)
+      @gene.swap_roadmap!(@product.roadmaps.last)
       @gene.roadmap.should == @product.roadmaps.last
     end
 
     it 'should not keep the same roadmap' do
       before_swap = @gene.roadmap
-      @gene.swap!
+      @gene.swap_roadmap!
       @gene.roadmap.should_not == before_swap
     end
 
@@ -44,7 +51,7 @@ describe GARuby::Gene do
       @gene = @product.to_gene
 
       before_swap = @gene.roadmap
-      @gene.swap!
+      @gene.swap_roadmap!
       @gene.roadmap.should == before_swap
     end
   end

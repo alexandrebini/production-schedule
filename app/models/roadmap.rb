@@ -3,5 +3,8 @@ class Roadmap < ActiveRecord::Base
   belongs_to :product
 
   validates_presence_of :product, :machines
+
+  # scopes
+  scope :random, :order => 'RAND()'
 end
 

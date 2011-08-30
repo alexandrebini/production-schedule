@@ -12,15 +12,17 @@ class GARuby::Gene
     [@product.id, @roadmap.id]
   end
 
-  def swap!(roadmap=nil)
+  def swap_roadmap!(roadmap=nil)
     if roadmap.nil?
-      if @product.roadmaps.size > 1
-        roadmap = @product.roadmaps.shuffle.first while roadmap == @roadmap
-      else
+      begin
         roadmap = @product.roadmaps.shuffle.first
-      end
+      end while @product.roadmaps.size > 1 && roadmap == @roadmap
     end
     @roadmap = roadmap
+  end
+
+  def clone
+    GARuby::Gene.new(:product => @product, :roadmap => @roadmap)
   end
 
 end

@@ -1,4 +1,4 @@
-module GARuby
+class GARuby
   module Models
     class Product < Product
 
