@@ -20,6 +20,3 @@ OperationTime.blueprint do
   time { rand 9999 }
 end
 
-# GA lib
-GARuby::Models::Product.blueprint {}
-

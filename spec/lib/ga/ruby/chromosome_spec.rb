@@ -1,19 +1,19 @@
 require "spec_helper"
 
-describe GARuby::Chromosome do
+describe Chromosome do
   it 'have genes' do
-    lambda{ GARuby::Chromosome.new(:genes => nil) }.should raise_error
+    lambda{ Chromosome.new(:genes => nil) }.should raise_error
   end
 
   it 'should be able to generate a random' do
     2.times{ Product.make! }
-    lambda{ GARuby::Chromosome.random }.should_not raise_error
+    lambda{ Chromosome.random }.should_not raise_error
   end
 
   it 'have a gene for each product' do
     products_ids = Array.new(3){ Product.make! }.map(&:id)
 
-    chromosome = GARuby::Chromosome.random
+    chromosome = Chromosome.random
     chromosome.genes.each do |gene|
       products_ids.should include(gene.product.id)
     end
@@ -21,13 +21,13 @@ describe GARuby::Chromosome do
 
   it 'can be viewed as an array' do
     2.times{ Product.make! }
-    chromosome = GARuby::Chromosome.random
+    chromosome = Chromosome.random
     lambda{ chromosome.to_a }.should_not raise_error
   end
 
   it 'should be able to get fitness' do
     2.times{ Product.make! }
-    chromosome = GARuby::Chromosome.random
+    chromosome = Chromosome.random
     lambda{ chromosome.fitness }.should_not raise_error
   end
 
@@ -35,7 +35,7 @@ describe GARuby::Chromosome do
     2.times{ Product.make! }
     5.times{ Roadmap.make!(:product => Product.random.first) }
 
-    chromosome = GARuby::Chromosome.random
+    chromosome = Chromosome.random
     chromosome.mutate(100)
     for gene in chromosome.genes
       gene.roadmap.product_id.should == gene.product.id
@@ -45,8 +45,8 @@ describe GARuby::Chromosome do
   it 'is crossable' do
     3.times{ Product.make! }
 
-    chromosome1 = GARuby::Chromosome.new(:genes => GARuby::Models::Product.find_all_by_id([1, 2]).map(&:to_gene) )
-    chromosome2 = GARuby::Chromosome.new(:genes => GARuby::Models::Product.find_all_by_id([2, 3]).map(&:to_gene) )
+    chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
+    chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )
 
     chromosome1.crossover(chromosome2, 100, 0)
 
@@ -57,14 +57,14 @@ describe GARuby::Chromosome do
 
   it 'should be able to find gene by product' do
     2.times{ Product.make! }
-    chromosome = GARuby::Chromosome.random
+    chromosome = Chromosome.random
     gene = chromosome.genes.last
     chromosome.find_by_product_id(gene.product.id).should == gene
   end
 
   it 'is cloneable' do
     2.times{ Product.make! }
-    first_chromosome = GARuby::Chromosome.random
+    first_chromosome = Chromosome.random
     second_chromosome = first_chromosome.clone
 
     first_chromosome.should_not == second_chromosome

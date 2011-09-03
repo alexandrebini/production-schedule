@@ -1,23 +1,23 @@
 require "spec_helper"
 
-describe GARuby do
+describe GA do
   it 'initializer auto create chromosomes' do
-    GARuby.new.population.should_not be_nil
+    GA.new.population.should_not be_nil
   end
 
   it 'should be able to get the best chromosome' do
-    ga = GARuby.new
+    ga = GA.new
     lambda{ ga.best_chromosome }.should_not raise_error
   end
 
   it 'should be able to select by tournament' do
-    ga = GARuby.new
+    ga = GA.new
     lambda{ ga.selection }.should_not raise_error
   end
 
   it 'selected chromosome should be cloned' do
     5.times{ Product.make! }
-    ga = GARuby.new
+    ga = GA.new
     selected_chromosome = ga.selection
     for chromosome in ga.population
       selected_chromosome.should_not == chromosome
@@ -26,13 +26,13 @@ describe GARuby do
   end
 
   it 'should be able get the population fitness' do
-    ga = GARuby.new
+    ga = GA.new
     lambda{ ga.population_fitness }.should_not raise_error
   end
 
   context 'dynamically adjusts rates' do
     before(:each) do
-      @ga = GARuby.new(:crossover_rate => 75, :mutation_rate => 5)
+      @ga = GA.new(:crossover_rate => 75, :mutation_rate => 5)
     end
 
     context 'when fitnesse differente increases 10%' do

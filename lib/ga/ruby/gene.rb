@@ -1,4 +1,4 @@
-class GARuby::Gene
+class Gene
   attr_reader :product, :roadmap
 
   def initialize(args={})
@@ -22,7 +22,7 @@ class GARuby::Gene
   end
 
   def clone
-    GARuby::Gene.new(:product => @product, :roadmap => @roadmap)
+    Gene.new(:product => @product, :roadmap => @roadmap)
   end
 
 end

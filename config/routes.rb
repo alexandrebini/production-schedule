@@ -1,10 +1,4 @@
-ProductionScheduling::Application.routes.draw do
-  resources :roadmaps
-
-  resources :products
-
-  resources :machines
-
+ProductionSchedule::Application.routes.draw do
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

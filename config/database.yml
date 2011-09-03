@@ -2,7 +2,7 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: production_scheduling_development
+  database: production_schedule_development
   pool: 5
   username: root
   password:
@@ -12,7 +12,7 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: production_scheduling_test
+  database: production_schedule_test
   pool: 5
   username: root
   password:
@@ -22,7 +22,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: production_scheduling_production
+  database: production_schedule_production
   pool: 5
   username: root
   password:

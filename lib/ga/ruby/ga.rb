@@ -1,10 +1,6 @@
-class GARuby
+class GA
   require File.expand_path('../chromosome', __FILE__)
   require File.expand_path('../gene', __FILE__)
-  #require File.expand_path('../models/product', __FILE__)
-  module Models
-    autoload :Product, File.expand_path('../models/product', __FILE__)
-  end
 
   attr_reader :population, :length, :generations
   attr_reader :mutation_rate, :crossover_rate, :max_generations

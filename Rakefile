@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-ProductionScheduling::Application.load_tasks
+ProductionSchedule::Application.load_tasks
