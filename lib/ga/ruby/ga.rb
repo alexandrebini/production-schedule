@@ -6,7 +6,7 @@ class GA
   attr_reader :mutation_rate, :crossover_rate, :max_generations
 
   def initialize(args={})
-    options = { :length => 40, :mutation_rate => 1, :crossover_rate => 75, :max_generations => 10000 }
+    options = { :length => 40, :mutation_rate => 5, :crossover_rate => 75, :max_generations => 10000 }
     options.merge!(args).each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
@@ -14,30 +14,42 @@ class GA
     @population = Array.new(options[:length]){ Chromosome.random(args[:products]) }
   end
 
-  def selection
-    best_chromosome(@population.shuffle[0..4]).clone
+  def selection(current_population=@population)
+    chromosome = best_chromosome(@population.shuffle[0..4])
+    current_population.delete chromosome
+    chromosome#.clone
   end
 
   def run
     while @generations < max_generations
       # store the current fitness
-      current_fitness = population_fitness(@population)
-
-      next_population = []
+      current_population = @population.clone
+      current_fitness = population_fitness(current_population)
 
       # stores the best chromosome to send it to the next generation
-      next_population << best_chromosome
+      next_population = []
+      next_population << current_population.delete(best_chromosome)
 
+      # puts "#{@generations}/#{@max_generations} (before): #{population_fitness}"
       while next_population.size < @length
-        chromosome1 = selection
-        chromosome2 = selection
+        chromosome1 = selection(current_population)
+        chromosome2 = selection(current_population)
+
+        f1 = chromosome1.fitness
+        f2 = chromosome2.fitness
 
         # crossover
         chromosome1.crossover chromosome2, @crossover_rate
 
+        #puts "chromosome1 after crossover: #{chromosome1.genes.map(&:to_a)} "
+
         # mutate
         chromosome1.mutate @mutation_rate
         chromosome2.mutate @mutation_rate
+
+        puts "fitness ch1: #{f1} - #{chromosome1.fitness}"
+        puts "fitness ch2: #{f2} - #{chromosome2.fitness}"
+        puts
 
         # add to next population
         next_population.push chromosome1 if next_population.size < @length
@@ -49,13 +61,16 @@ class GA
       # replace the population
       @population = next_population
 
+      puts "#{@generations}/#{@max_generations} (after): #{population_fitness}"
+
       # increase population counter
       @generations += 1
     end
   end
 
   def adjust_rates!(current_fitness, next_fitness)
-    fitness_difference = (next_fitness.to_f - current_fitness.to_f) / current_fitness.to_f * 100
+    # percentage difference. *-100 because the lower the fitness, the better
+    fitness_difference = (next_fitness.to_f - current_fitness.to_f) / current_fitness.to_f * -100
     # if fitness increase 10% or more
     if fitness_difference >= 10
       # increase crossover rate by 5% respecting the limit of 100%
@@ -71,7 +86,7 @@ class GA
   end
 
   def best_chromosome(population=@population)
-    population.max_by{ |chromosome| chromosome.fitness }
+    population.min_by{ |chromosome| chromosome.fitness }
   end
 
   def population_fitness(population=@population)

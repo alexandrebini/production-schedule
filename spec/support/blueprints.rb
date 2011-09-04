@@ -24,12 +24,12 @@ end
 OperationTime.blueprint do
   product
   machine
-  time { 100 }
+  time { rand(50) + 50 }
 end
 
 Schedule.blueprint do
-  training
   operations { Array.new(5){ ScheduleOperation.make(:schedule => self.object) } }
+  training
   makespan { rand 99 }
 end
 

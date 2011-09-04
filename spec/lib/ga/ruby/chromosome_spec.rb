@@ -1,32 +1,57 @@
 require "spec_helper"
 
 describe Chromosome do
-  it 'should intercalary in the right order' do
-    m1 = Machine.make!
-    m2 = Machine.make!
-    m3 = Machine.make!
+  context 'intercalary in the right order' do
+    before(:each) do
+      @m1 = Machine.make!
+      @m2 = Machine.make!
+      @m3 = Machine.make!
 
-    p1 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [m1, m2, m3])]
-    p2 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [m2, m1, m3])]
+      @p1 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [@m1, @m2, @m3])]
+      @p2 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [@m2, @m1, @m3])]
+    end
 
-    OperationTime.make! :product => p1, :machine => m1, :time => 100
-    OperationTime.make! :product => p1, :machine => m2, :time => 100
-    OperationTime.make! :product => p1, :machine => m3, :time => 100
+    it 'for linear times' do
+      chromosome = Chromosome.new :genes =>[@p1, @p2].map(&:to_gene)
 
-    OperationTime.make! :product => p2, :machine => m2, :time => 100
-    OperationTime.make! :product => p2, :machine => m1, :time => 100
-    OperationTime.make! :product => p2, :machine => m3, :time => 100
+      OperationTime.make! :product => @p1, :machine => @m1, :time => 100
+      OperationTime.make! :product => @p1, :machine => @m2, :time => 100
+      OperationTime.make! :product => @p1, :machine => @m3, :time => 100
 
-    chromosome = Chromosome.new :genes =>[p1, p2].map(&:to_gene)
-    schedule = chromosome.to_schedule
+      OperationTime.make! :product => @p2, :machine => @m2, :time => 100
+      OperationTime.make! :product => @p2, :machine => @m1, :time => 100
+      OperationTime.make! :product => @p2, :machine => @m3, :time => 100
 
-    attributes = schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
-    attributes[0].should == { :product_id => p1.id, :machine_id => m1.id, :start_at => 0, :end_at => 100 }
-    attributes[1].should == { :product_id => p2.id, :machine_id => m2.id, :start_at => 0, :end_at => 100 }
-    attributes[2].should == { :product_id => p1.id, :machine_id => m2.id, :start_at => 100, :end_at => 200 }
-    attributes[3].should == { :product_id => p2.id, :machine_id => m1.id, :start_at => 100, :end_at => 200 }
-    attributes[4].should == { :product_id => p1.id, :machine_id => m3.id, :start_at => 200, :end_at => 300 }
-    attributes[5].should == { :product_id => p2.id, :machine_id => m3.id, :start_at => 300, :end_at => 400 }
+      attributes = chromosome.schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
+
+      attributes[0].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 100 }
+      attributes[1].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 100 }
+      attributes[2].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 100, :end_at => 200 }
+      attributes[3].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 100, :end_at => 200 }
+      attributes[4].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 200, :end_at => 300 }
+      attributes[5].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 300, :end_at => 400 }
+    end
+
+    it 'for intermediate times' do
+      chromosome = Chromosome.new :genes =>[@p2, @p1].map(&:to_gene)
+
+      OperationTime.make! :product => @p1, :machine => @m1, :time => 150
+      OperationTime.make! :product => @p1, :machine => @m2, :time => 150
+      OperationTime.make! :product => @p1, :machine => @m3, :time => 100
+
+      OperationTime.make! :product => @p2, :machine => @m1, :time => 100
+      OperationTime.make! :product => @p2, :machine => @m2, :time => 50
+      OperationTime.make! :product => @p2, :machine => @m3, :time => 100
+
+      attributes = chromosome.schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
+
+      attributes[0].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 50 }
+      attributes[1].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 150 }
+      attributes[2].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 150, :end_at => 250 }
+      attributes[3].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 150, :end_at => 300 }
+      attributes[4].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 250, :end_at => 350 }
+      attributes[5].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 350, :end_at => 450 }
+    end
   end
 
   it 'have genes' do
@@ -105,6 +130,5 @@ describe Chromosome do
       end
     end
   end
-
 end
 
