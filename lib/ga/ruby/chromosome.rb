@@ -45,5 +45,42 @@ class Chromosome
     Chromosome.new :genes => @genes.map(&:clone)
   end
 
+  def to_schedule
+    schedule = Schedule.new
+
+    max = @genes.map{ |r| r.roadmap.machines.count }.max
+    puts "max: #{ max }"
+    puts "----roadmaps"
+    @genes.each{|r| puts "produto: #{r.product.id} \trotas: #{ r.roadmap.machines.map(&:id)}" }
+    puts
+    max.times do |time|
+      for gene in @genes
+        machine = gene.roadmap.machines[time]
+        next if machine.nil?
+        start_at = 0
+
+        puts "###### produto: #{gene.product.id}     maquina: #{machine.id}"
+
+        last_operation_of_machine = schedule.operations_of_machine(machine.id).last
+        start_at = last_operation_of_machine.end_at if last_operation_of_machine
+
+        last_operation_of_product = schedule.operations_of_product(gene.product.id).last
+        start_at = last_operation_of_product.end_at if last_operation_of_product && last_operation_of_product.end_at > start_at
+
+        #puts
+        #p last_operation_of_machine
+        #p last_operation_of_product
+
+        schedule.operations.build :product => gene.product, :machine => machine, :start_at => start_at,
+          :end_at => start_at + gene.product.operation_times.of_machine(machine.id).time
+
+        puts
+        schedule.operations.each {|r| puts "produto: #{r.product.id} \t maquina: #{r.machine.id} \t\t #{r.start_at}-#{r.end_at}" }
+        puts
+      end
+    end
+    schedule
+  end
+
 end
 

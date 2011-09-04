@@ -1,6 +1,34 @@
 require "spec_helper"
 
 describe Chromosome do
+  it 'should intercalary in the right order' do
+    m1 = Machine.make!
+    m2 = Machine.make!
+    m3 = Machine.make!
+
+    p1 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [m1, m2, m3])]
+    p2 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [m2, m1, m3])]
+
+    OperationTime.make! :product => p1, :machine => m1, :time => 100
+    OperationTime.make! :product => p1, :machine => m2, :time => 100
+    OperationTime.make! :product => p1, :machine => m3, :time => 100
+
+    OperationTime.make! :product => p2, :machine => m2, :time => 100
+    OperationTime.make! :product => p2, :machine => m1, :time => 100
+    OperationTime.make! :product => p2, :machine => m3, :time => 100
+
+    chromosome = Chromosome.new :genes =>[p1, p2].map(&:to_gene)
+    schedule = chromosome.to_schedule
+
+    attributes = schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
+    attributes[0].should == { :product_id => p1.id, :machine_id => m1.id, :start_at => 0, :end_at => 100 }
+    attributes[1].should == { :product_id => p2.id, :machine_id => m2.id, :start_at => 0, :end_at => 100 }
+    attributes[2].should == { :product_id => p1.id, :machine_id => m2.id, :start_at => 100, :end_at => 200 }
+    attributes[3].should == { :product_id => p2.id, :machine_id => m1.id, :start_at => 100, :end_at => 200 }
+    attributes[4].should == { :product_id => p1.id, :machine_id => m3.id, :start_at => 200, :end_at => 300 }
+    attributes[5].should == { :product_id => p2.id, :machine_id => m3.id, :start_at => 300, :end_at => 400 }
+  end
+
   it 'have genes' do
     lambda{ Chromosome.new(:genes => nil) }.should raise_error
   end

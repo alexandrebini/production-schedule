@@ -25,5 +25,12 @@ class Gene
     Gene.new(:product => @product, :roadmap => @roadmap)
   end
 
+  def to_operations
+    @roadmap.machines.map do |machine|
+      ScheduleOperation.new :product => @product, :machine => machine,
+        :end_at => @product.operation_times.of_machine(machine.id).time
+    end
+  end
+
 end
 

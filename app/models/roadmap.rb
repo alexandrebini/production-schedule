@@ -3,6 +3,7 @@ class Roadmap < ActiveRecord::Base
   belongs_to :product
 
   validates_presence_of :product, :machines
+  # validates_inclusion_of :machines, :in => proc{ |roadmap| p roadmap.product.machines, roadmap.machines; roadmap.product.machines }
 
   # scopes
   scope :random, :order => 'RAND()'

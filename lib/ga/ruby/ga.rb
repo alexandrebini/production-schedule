@@ -6,12 +6,12 @@ class GA
   attr_reader :mutation_rate, :crossover_rate, :max_generations
 
   def initialize(args={})
-    options = { :length => 40, :mutation_rate => 0.1, :crossover_rate => 75, :max_generations => 10000 }
+    options = { :length => 40, :mutation_rate => 1, :crossover_rate => 75, :max_generations => 10000 }
     options.merge!(args).each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
     @generations = 0
-    @population = Array.new(options[:length]){ Chromosome.random }
+    @population = Array.new(options[:length]){ Chromosome.random(args[:products]) }
   end
 
   def selection

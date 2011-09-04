@@ -55,5 +55,6 @@ describe Gene do
       @gene.roadmap.should == before_swap
     end
   end
+
 end
 
