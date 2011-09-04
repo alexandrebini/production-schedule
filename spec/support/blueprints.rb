@@ -7,10 +7,12 @@ end
 Product.blueprint do
   name { Faker::Lorem.words.first }
   operation_times do
-    self.object.operation_times || Array.new(3){ OperationTime.make!(:product => self.object) }
+    return self.object.operation_times unless self.object.operation_times.blank?
+    Array.new(3){ OperationTime.make!(:product => self.object) }
   end
   roadmaps do
-    self.object.roadmaps || Array.new(2){ Roadmap.make(:product => self.object, :machines => self.object.operation_times.map(&:machine) ) }
+    return self.object.roadmaps unless self.object.roadmaps.blank?
+    Array.new(2){ Roadmap.make(:product => self.object, :machines => self.object.operation_times.map(&:machine) ) }
   end
 end
 
@@ -22,7 +24,6 @@ end
 OperationTime.blueprint do
   product
   machine
-  #time { rand 9999 }
   time { 100 }
 end
 
