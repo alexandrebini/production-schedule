@@ -12,11 +12,11 @@ class Gene
     [@product.id, @roadmap.id]
   end
 
+  # Gene Class
   def swap_roadmap!(roadmap=nil)
-    if roadmap.nil?
-      begin
-        roadmap = @product.roadmaps.shuffle.first
-      end while @product.roadmaps.size > 1 && roadmap == @roadmap
+    roadmap ||= @roadmap
+    while @product.roadmaps.size > 1 && roadmap == @roadmap
+      roadmap = @product.roadmaps.shuffle.first
     end
     @roadmap = roadmap
   end
