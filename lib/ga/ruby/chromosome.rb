@@ -2,9 +2,8 @@ class Chromosome
   attr_reader :genes, :fitness, :schedule
 
   def initialize(args={})
-    raise ArgumentError.new("genes are nil") if args[:genes].nil?
-    @genes = args[:genes]
-    @schedule = nil
+    args.each { |k,v| instance_variable_set("@#{k}", v) unless v.nil? }
+    raise ArgumentError.new("genes are nil") if @genes.nil?
   end
 
   def self.random(products = nil)
@@ -48,7 +47,11 @@ class Chromosome
   end
 
   def clone
-    Chromosome.new :genes => @genes.map(&:clone)
+    if @schedule
+      Chromosome.new :genes => @genes.map(&:clone), :genes_changed => false, :schedule => @schedule.clone, :fitness => @fitness
+    else
+      Chromosome.new :genes => @genes.map(&:clone)
+    end
   end
 
   def schedule
@@ -56,7 +59,8 @@ class Chromosome
     @schedule = Schedule.new
 
     max_machines = @genes.map{ |r| r.roadmap.machines.count }.max.to_i
-
+    
+    st = ""
     max_machines.times do |time|
       for gene in @genes
         machine = gene.roadmap.machines[time]
@@ -69,14 +73,31 @@ class Chromosome
         last_operation_of_product = @schedule.operations_of_product(gene.product.id).last
         start_at = last_operation_of_product.end_at if last_operation_of_product && last_operation_of_product.end_at > start_at
 
-        # puts "### produto: #{gene.product.id } \t maquina: #{machine.id} \t #{start_at}..#{start_at + gene.product.operation_times.of_machine(machine.id).time}"
-        # p last_operation_of_machine
-        # p last_operation_of_product
+        #puts "### produto: #{gene.product.id } \t maquina: #{machine.id} \t #{start_at}..#{start_at + gene.product.operation_times.of_machine(machine.id).time}"
+        #p last_operation_of_machine
+        #p last_operation_of_product
         # puts
+        
+        st += { :product => gene.product.name, :machine => machine.name, 
+            :start_at => start_at, :end_at => start_at + gene.product.operation_times.of_machine(machine.id).time }.to_s
+        st += "\n"
 
         @schedule.operations.build :product => gene.product, :machine => machine, :start_at => start_at,
           :end_at => start_at + gene.product.operation_times.of_machine(machine.id).time
+        st += "#{@schedule.operations.size}\n"
       end
+    end
+    
+    if @schedule.operations.size == 0
+      #puts 
+      #puts "-------------------------"
+      #puts "max_machines: #{max_machines}\t\toperations: #{ @schedule.operations.size }"
+      #for gene in @genes
+      #  a = { :product => gene.product.name, :machine => gene.roadmap.machines.map(&:name) }
+      #  puts a
+      #end
+      #puts
+      #puts st
     end
 
     @schedule

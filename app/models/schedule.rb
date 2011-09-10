@@ -32,6 +32,7 @@ class Schedule < ActiveRecord::Base
 
   def makespan
     return super unless new_record?
+    return if operations.blank?
     last_operation.end_at - first_operation.start_at
   end
 

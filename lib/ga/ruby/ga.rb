@@ -1,4 +1,5 @@
 class GA
+  require File.expand_path('../population', __FILE__)
   require File.expand_path('../chromosome', __FILE__)
   require File.expand_path('../gene', __FILE__)
 
@@ -11,57 +12,48 @@ class GA
       instance_variable_set("@#{k}", v) unless v.nil?
     end
     @generations = 0
-    @population = Array.new(options[:length]){ Chromosome.random(args[:products]) }
+    @population = Population.new(:length => @length, :products => args[:products])
   end
 
-  def selection(current_population=@population)
-    chromosome = best_chromosome(@population.shuffle[0..4])
-    current_population.delete chromosome
-    chromosome#.clone
-  end
-
-  def run
+  def run    
     while @generations < max_generations
-      # store the current fitness
-      current_population = @population.clone
-      current_fitness = population_fitness(current_population)
-
       # stores the best chromosome to send it to the next generation
-      next_population = []
-      next_population << current_population.delete(best_chromosome)
+      next_population = Population.new
+      next_population << @population.best
 
+      threads = []
       # puts "#{@generations}/#{@max_generations} (before): #{population_fitness}"
-      while next_population.size < @length
-        chromosome1 = selection(current_population)
-        chromosome2 = selection(current_population)
+      
+      5.times do
+        threads << Thread.new do
+          Thread.current[:population] = @population.clone
+          (@length/5).times do
+            #break unless current_population.size > 1
+            chromosome1 = Thread.current[:population].selection
+            chromosome2 = Thread.current[:population].selection
 
-        f1 = chromosome1.fitness
-        f2 = chromosome2.fitness
+            # crossover
+            chromosome1.crossover chromosome2, @crossover_rate
 
-        # crossover
-        chromosome1.crossover chromosome2, @crossover_rate
+            # mutate
+            chromosome1.mutate @mutation_rate
+            chromosome2.mutate @mutation_rate
 
-        #puts "chromosome1 after crossover: #{chromosome1.genes.map(&:to_a)} "
-
-        # mutate
-        chromosome1.mutate @mutation_rate
-        chromosome2.mutate @mutation_rate
-
-        puts "fitness ch1: #{f1} - #{chromosome1.fitness}"
-        puts "fitness ch2: #{f2} - #{chromosome2.fitness}"
-        puts
-
-        # add to next population
-        next_population.push chromosome1 if next_population.size < @length
-        next_population.push chromosome2 if next_population.size < @length
+            # add to next population
+            next_population.push chromosome1 if next_population.size < @length
+            next_population.push chromosome2 if next_population.size < @length
+          end
+        end
       end
-
-      adjust_rates! current_fitness, population_fitness(next_population)
+      
+      threads.each(&:join)
+      
+      adjust_rates! @population.fitness, next_population.fitness
 
       # replace the population
       @population = next_population
 
-      puts "#{@generations}/#{@max_generations} (after): #{population_fitness}"
+      puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness}"
 
       # increase population counter
       @generations += 1
@@ -83,14 +75,6 @@ class GA
       # decreases mutation rate by 0.5% respecting the limit of 0%
       @mutation_rate  = [@mutation_rate-0.5, 0].max
     end
-  end
-
-  def best_chromosome(population=@population)
-    population.min_by{ |chromosome| chromosome.fitness }
-  end
-
-  def population_fitness(population=@population)
-    population.inject(0){ |sum,x| sum += x.fitness }
   end
 
 end

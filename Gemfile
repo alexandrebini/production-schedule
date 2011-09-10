@@ -22,6 +22,7 @@ group :development do
   gem 'active_reload', '0.6.0'
   gem 'passenger', '3.0.8'
   gem 'haml-rails'
+  gem 'ruby-prof', '0.10.8'
 end
 
 group :test do
