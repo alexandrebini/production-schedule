@@ -12,14 +12,16 @@ class GA
       instance_variable_set("@#{k}", v) unless v.nil?
     end
     @generations = 0
-    @population = Population.new(:length => @length, :products => args[:products])
+    #@population = Population.new(:length => @length, :products => args[:products])
+    @population = Array.new(options[:length]){ Chromosome.random(args[:products]) }
   end
 
   def run    
     while @generations < max_generations
       # stores the best chromosome to send it to the next generation
-      next_population = Population.new
-      next_population << @population.best
+      #next_population = Population.new
+      next_population = []
+      next_population << best_chromosome
 
       threads = []
       # puts "#{@generations}/#{@max_generations} (before): #{population_fitness}"
@@ -48,7 +50,8 @@ class GA
       
       threads.each(&:join)
       
-      adjust_rates! @population.fitness, next_population.fitness
+      #adjust_rates! @population.fitness, next_population.fitness
+      adjust_rates! population_fitness(@population), population_fitness(next_population)
 
       # replace the population
       @population = next_population
@@ -75,6 +78,23 @@ class GA
       # decreases mutation rate by 0.5% respecting the limit of 0%
       @mutation_rate  = [@mutation_rate-0.5, 0].max
     end
+  end
+  
+  
+  
+  
+  def best_chromosome(population=@population)
+    population.min_by{ |chromosome| chromosome.fitness }
+  end
+
+  def population_fitness(population=@population)
+    population.inject(0){ |sum,x| sum += x.fitness }
+  end
+  
+  def selection(current_population=@population)
+    chromosome = best_chromosome(@population.shuffle[0..4])
+    current_population.delete chromosome
+    chromosome#.clone
   end
 
 end
