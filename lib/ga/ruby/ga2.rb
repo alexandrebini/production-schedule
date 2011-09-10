@@ -1,4 +1,3 @@
-require 'thread'
 class GA
   require File.expand_path('../population', __FILE__)
   require File.expand_path('../chromosome', __FILE__)
@@ -6,59 +5,59 @@ class GA
 
   attr_reader :population, :length, :generations
   attr_reader :mutation_rate, :crossover_rate, :max_generations
-  attr_reader :max_threads
 
   def initialize(args={})
-    options = { :length => 40, :mutation_rate => 5, :crossover_rate => 75, :max_generations => 10000, :max_threads => 5 }
+    options = { :length => 40, :mutation_rate => 5, :crossover_rate => 75, :max_generations => 10000 }
     options.merge!(args).each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
     @generations = 0
-    @population = Population.new(:length => @length, :products => args[:products])
+    #@population = Population.new(:length => @length, :products => args[:products])
+    @population = Array.new(options[:length]){ Chromosome.random(args[:products]) }
   end
 
   def run    
     while @generations < max_generations
       # stores the best chromosome to send it to the next generation
-      next_population = Population.new
-      next_population << @population.best
+      #next_population = Population.new
+      next_population = []
+      next_population << best_chromosome
 
       threads = []
       # puts "#{@generations}/#{@max_generations} (before): #{population_fitness}"
       
-      operations_per_thread = @length / @max_threads
-      @max_threads.times.map do
-        Thread.new do
-          Thread.current[:population] = @population.clone
-          Thread.current[:next_population] = next_population
+      5.times do
+        threads << Thread.new do
+          Thread.current[:population] = @population.map{ |r| r.clone }
+          (@length/5).times do
+            #break unless current_population.size > 1
+            chromosome1 = selection(Thread.current[:population])
+            chromosome2 = selection(Thread.current[:population])
 
-          operations_per_thread.times do            
-            Thread.current.kill if Thread.current[:next_population].size == @length            
-            
-            # selection
-            chromosome1 = Thread.current[:population].selection
-            chromosome2 = Thread.current[:population].selection
-            
             # crossover
             chromosome1.crossover chromosome2, @crossover_rate
 
             # mutate
             chromosome1.mutate @mutation_rate
             chromosome2.mutate @mutation_rate
-            
+
             # add to next population
-            Thread.current[:next_population].push chromosome1 if Thread.current[:next_population].size < @length
-            Thread.current[:next_population].push chromosome2 if Thread.current[:next_population].size < @length
+            next_population.push chromosome1 if next_population.size < @length
+            next_population.push chromosome2 if next_population.size < @length
           end
         end
-      end.each(&:join)
+      end
       
-      adjust_rates! @population.fitness, next_population.fitness
+      threads.each(&:join)
+      
+      #adjust_rates! @population.fitness, next_population.fitness
+      adjust_rates! population_fitness(@population), population_fitness(next_population)
 
       # replace the population
       @population = next_population
 
-      puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness}"
+      #puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness}"
+      puts "#{@generations}/#{@max_generations} \t total: #{population_fitness} \t best: #{best_chromosome.fitness}"
 
       # increase population counter
       @generations += 1
@@ -80,6 +79,23 @@ class GA
       # decreases mutation rate by 0.5% respecting the limit of 0%
       @mutation_rate  = [@mutation_rate-0.5, 0].max
     end
+  end
+  
+  
+  
+  
+  def best_chromosome(population=@population)
+    population.min_by{ |chromosome| chromosome.fitness }
+  end
+
+  def population_fitness(population=@population)
+    population.inject(0){ |sum,x| sum += x.fitness }
+  end
+  
+  def selection(current_population=@population)
+    chromosome = best_chromosome(current_population.shuffle[0..4])
+    #current_population.delete chromosome
+    chromosome.clone
   end
 
 end
