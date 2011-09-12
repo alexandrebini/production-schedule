@@ -22,14 +22,12 @@ describe Chromosome do
       OperationTime.make! :product => @p2, :machine => @m1, :time => 100
       OperationTime.make! :product => @p2, :machine => @m3, :time => 100
 
-      attributes = chromosome.schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
-
-      attributes[0].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 100 }
-      attributes[1].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 100 }
-      attributes[2].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 100, :end_at => 200 }
-      attributes[3].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 100, :end_at => 200 }
-      attributes[4].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 200, :end_at => 300 }
-      attributes[5].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 300, :end_at => 400 }
+      chromosome.schedule[0].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 100 }
+      chromosome.schedule[1].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 100 }
+      chromosome.schedule[2].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 100, :end_at => 200 }
+      chromosome.schedule[3].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 100, :end_at => 200 }
+      chromosome.schedule[4].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 200, :end_at => 300 }
+      chromosome.schedule[5].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 300, :end_at => 400 }
     end
 
     it 'for intermediate times' do
@@ -43,14 +41,12 @@ describe Chromosome do
       OperationTime.make! :product => @p2, :machine => @m2, :time => 50
       OperationTime.make! :product => @p2, :machine => @m3, :time => 100
 
-      attributes = chromosome.schedule.operations.map { |r| r.attributes.symbolize_keys.delete_if {|key, value| value.nil?} }
-
-      attributes[0].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 50 }
-      attributes[1].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 150 }
-      attributes[2].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 150, :end_at => 250 }
-      attributes[3].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 150, :end_at => 300 }
-      attributes[4].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 250, :end_at => 350 }
-      attributes[5].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 350, :end_at => 450 }
+      chromosome.schedule[0].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 50 }
+      chromosome.schedule[1].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 150 }
+      chromosome.schedule[2].should == { :product_id => @p2.id, :machine_id => @m1.id, :start_at => 150, :end_at => 250 }
+      chromosome.schedule[3].should == { :product_id => @p1.id, :machine_id => @m2.id, :start_at => 150, :end_at => 300 }
+      chromosome.schedule[4].should == { :product_id => @p2.id, :machine_id => @m3.id, :start_at => 250, :end_at => 350 }
+      chromosome.schedule[5].should == { :product_id => @p1.id, :machine_id => @m3.id, :start_at => 350, :end_at => 450 }
     end
   end
 
@@ -82,7 +78,8 @@ describe Chromosome do
   it 'should be able to get fitness' do
     2.times{ Product.make! }
     chromosome = Chromosome.random
-    lambda{ chromosome.fitness }.should_not raise_error
+    chromosome.fitness
+    #lambda{ chromosome.fitness }.should_not raise_error
   end
 
   it 'is mutable' do

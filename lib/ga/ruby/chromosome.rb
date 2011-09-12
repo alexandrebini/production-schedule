@@ -7,6 +7,7 @@ class Chromosome
     raise ArgumentError.new("genes are nil") if @genes.nil?
     @cache ||= Cache.new
     @cache.add_products @genes.map(&:product)
+    @schedule = []
   end
 
   def self.random(args={})
@@ -20,7 +21,8 @@ class Chromosome
 
   def fitness
     return @fitness unless @fitness.nil? || @genes_changed
-    schedule.makespan
+    schedule
+    last_operation[:end_at] - first_operation[:start_at]
   end
 
   def mutate(rate)
@@ -58,8 +60,7 @@ class Chromosome
   end
 
   def schedule
-    return @schedule unless @schedule.nil? || @genes_changed
-    @schedule = Schedule.new
+    return @schedule unless @schedule.blank? || @genes_changed
 
     max_machines = @genes.map{ |r| r.roadmap.machines.size }.max.to_i
 
@@ -69,20 +70,36 @@ class Chromosome
         next if machine.nil?
         start_at = 0
 
-        last_operation_of_machine = @schedule.operations_of_machine(machine.id).last
-        start_at = last_operation_of_machine.end_at if last_operation_of_machine
+        last_operation_of_machine = operations_of_machine(machine.id).last
+        start_at = last_operation_of_machine[:end_at] if last_operation_of_machine
 
-        last_operation_of_product = @schedule.operations_of_product(gene.product.id).last
-        start_at = last_operation_of_product.end_at if last_operation_of_product && last_operation_of_product.end_at > start_at
+        last_operation_of_product = operations_of_product(gene.product.id).last
+        start_at = last_operation_of_product[:end_at] if last_operation_of_product && last_operation_of_product[:end_at] > start_at
 
         operation_time = @cache.operation_times.of_product_and_machine(gene.product.id, machine.id)
 
-        @schedule.operations.build :product => gene.product, :machine => machine, :start_at => start_at, :end_at => start_at + operation_time.time
+        @schedule << { :product_id => gene.product.id, :machine_id => machine.id, :start_at => start_at, :end_at => start_at + operation_time.time }
       end
     end
     @schedule
   end
 
+
+  def operations_of_machine(machine_id)
+    @schedule.find_all{ |r| r[:machine_id] == machine_id }
+  end
+
+  def operations_of_product(product_id)
+    @schedule.find_all{ |r| r[:product_id] == product_id }
+  end
+
+  def first_operation
+    @schedule.sort_by{ |r| r[:start_at] }.first
+  end
+
+  def last_operation
+    @schedule.sort_by{ |r| r[:end_at] }.last
+  end
 
 end
 

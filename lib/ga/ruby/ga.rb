@@ -27,17 +27,16 @@ class GA
       next_population << @population.best
 
       operations_per_thread = @length / @max_threads / 2
+
       @max_threads.times.map do
         Thread.new do
-          Thread.current[:population] = @population.clone
-          Thread.current[:next_population] = next_population
 
           operations_per_thread.times do
-            Thread.current.kill if Thread.current[:next_population].size == @length
+            Thread.current.kill if next_population.size == @length
 
             # selection
-            chromosome1 = Thread.current[:population].selection
-            chromosome2 = Thread.current[:population].selection
+            chromosome1 = @population.selection
+            chromosome2 = @population.selection
 
             # crossover
             chromosome1.crossover chromosome2, @crossover_rate
@@ -47,8 +46,8 @@ class GA
             chromosome2.mutate @mutation_rate
 
             # add to next population
-            Thread.current[:next_population].push chromosome1 if Thread.current[:next_population].size < @length
-            Thread.current[:next_population].push chromosome2 if Thread.current[:next_population].size < @length
+            next_population.push chromosome1 if next_population.size < @length
+            next_population.push chromosome2 if next_population.size < @length
           end
         end
       end.each(&:join)
@@ -58,7 +57,7 @@ class GA
       # replace the population
       @population = next_population
 
-      puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness} \t\t mutation rate: #{@mutation_rate} \t crossover rate: #{@crossover_rate}"
+      puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness} \t\t mutation rate: #{@mutation_rate}% \t crossover rate: #{@crossover_rate}%"
 
       # increase population counter
       @generations += 1
