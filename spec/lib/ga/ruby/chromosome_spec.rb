@@ -60,7 +60,8 @@ describe Chromosome do
 
   it 'should be able to generate a random' do
     2.times{ Product.make! }
-    lambda{ Chromosome.random }.should_not raise_error
+    #lambda{ Chromosome.random }.should_not raise_error
+    Chromosome.random
   end
 
   it 'have a gene for each product' do
@@ -101,11 +102,20 @@ describe Chromosome do
     chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
     chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )
 
+    chromosome1_genes = chromosome1.genes.clone
+    chromosome2_genes = chromosome2.genes.clone
+
     chromosome1.crossover(chromosome2, 100, 0)
 
-    chromosome1.genes[0].roadmap.should_not == chromosome2.genes[0].roadmap
-    chromosome1.genes[1].roadmap.should == chromosome2.genes[0].roadmap
-    chromosome1.genes[1].roadmap.should_not == chromosome2.genes[1].roadmap
+    chromosome1.genes[0].roadmap.should == chromosome1_genes[0].roadmap
+    chromosome1.genes[1].roadmap.should == chromosome2_genes[0].roadmap
+    chromosome2.genes[0].roadmap.should == chromosome2_genes[0].roadmap
+    chromosome2.genes[1].roadmap.should == chromosome2_genes[1].roadmap
+
+    chromosome1.genes[0].roadmap.should_not == chromosome2_genes[0].roadmap
+    chromosome1.genes[1].roadmap.should_not == chromosome1_genes[0].roadmap
+    chromosome2.genes[0].roadmap.should_not == chromosome1_genes[0].roadmap
+    chromosome2.genes[1].roadmap.should_not == chromosome1_genes[0].roadmap
   end
 
   it 'should be able to find gene by product' do

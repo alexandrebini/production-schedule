@@ -50,11 +50,11 @@ describe GA do
         Roadmap.new(:machines => [m3, m4, m5, m6]),
       ]
     )
-    ga = GA.new(:products => [p1, p2, p3], :length => 30, :max_generations => 100, :mutation_date => 5, :crossover_rate => 60)
-    p ga
-    ga.run
-    p ga.best_chromosome
-    p ga.best_chromosome.fitness
+    #ga = GA.new(:products => [p1, p2, p3], :length => 30, :max_generations => 100, :mutation_date => 5, :crossover_rate => 60)
+    #p ga
+    #ga.run
+    #p ga.population.best
+    #p ga.population.fitness
   end
 =begin
   it 'problem 2' do
@@ -134,40 +134,7 @@ describe GA do
     #p ga.best_chromosome
     #p ga.best_chromosome.fitness
   end
-
-
-  context 'functions' do
-    before(:each) do
-      2.times{ Product.make! }
-    end
-    it 'initializer auto create chromosomes' do
-      GA.new.population.should_not be_nil
-    end
-
-    it 'should be able to get the best chromosome' do
-      ga = GA.new
-      lambda{ ga.best_chromosome }.should_not raise_error
-    end
-
-    it 'should be able to select by tournament' do
-      ga = GA.new
-      lambda{ ga.selection }.should_not raise_error
-    end
-
-    it 'selected chromosome should be cloned' do
-      ga = GA.new
-      selected_chromosome = ga.selection
-      for chromosome in ga.population
-        selected_chromosome.should_not == chromosome
-        selected_chromosome.genes.object_id.should_not == chromosome.genes.object_id
-      end
-    end
-
-    it 'should be able get the population fitness' do
-      ga = GA.new
-      lambda{ ga.population_fitness }.should_not raise_error
-    end
-  end
+=end
 
   context 'dynamically adjusts rates' do
     before(:each) do
@@ -228,7 +195,7 @@ describe GA do
 
       ga = GA.new(:products => [@p1, @p2], :length => 10, :max_generations => 10)
       ga.run
-      ga.best_chromosome.fitness.should == 400
+      ga.population.best.fitness.should == 400
     end
 
     it 'for intermediate times' do
@@ -242,9 +209,9 @@ describe GA do
 
       ga = GA.new(:products => [@p1, @p2], :length => 5, :max_generations => 1)
       ga.run
-      ga.best_chromosome.fitness.should == 450
+      ga.population.best.fitness.should == 450
     end
   end
-=end
+
 end
 

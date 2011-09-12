@@ -1,14 +1,17 @@
 class Chromosome
-  attr_reader :genes, :fitness, :schedule
+  attr_reader :genes, :fitness
+  attr_reader :cache, :schedule
 
   def initialize(args={})
     args.each { |k,v| instance_variable_set("@#{k}", v) unless v.nil? }
     raise ArgumentError.new("genes are nil") if @genes.nil?
+    @cache ||= Cache.new
+    @cache.add_products @genes.map(&:product)
   end
 
-  def self.random(products = nil)
-    products ||= Product.all
-    Chromosome.new :genes => products.shuffle.map(&:to_gene)
+  def self.random(args={})
+    products = args[:products] || Product.all
+    Chromosome.new :genes => products.shuffle.map(&:to_gene), :cache => args[:cache]
   end
 
   def to_a
@@ -58,8 +61,8 @@ class Chromosome
     return @schedule unless @schedule.nil? || @genes_changed
     @schedule = Schedule.new
 
-    max_machines = @genes.map{ |r| r.roadmap.machines.count }.max.to_i
-    
+    max_machines = @genes.map{ |r| r.roadmap.machines.size }.max.to_i
+
     max_machines.times do |time|
       for gene in @genes
         machine = gene.roadmap.machines[time]
@@ -72,12 +75,14 @@ class Chromosome
         last_operation_of_product = @schedule.operations_of_product(gene.product.id).last
         start_at = last_operation_of_product.end_at if last_operation_of_product && last_operation_of_product.end_at > start_at
 
-        @schedule.operations.build :product => gene.product, :machine => machine, :start_at => start_at,
-          :end_at => start_at + gene.product.operation_times.of_machine(machine.id).time
+        operation_time = @cache.operation_times.of_product_and_machine(gene.product.id, machine.id)
+
+        @schedule.operations.build :product => gene.product, :machine => machine, :start_at => start_at, :end_at => start_at + operation_time.time
       end
     end
     @schedule
   end
+
 
 end
 

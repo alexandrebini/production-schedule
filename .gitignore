@@ -7,4 +7,5 @@ tmp/*
 .sass-cache/
 Gemfile.lock
 doc/DaniloSipoliSanches/SimultaneousScheduling/bin
+.DS_Store
 

@@ -14,6 +14,8 @@ class Gene
 
   # Gene Class
   def swap_roadmap!(roadmap=nil)
+    return @roadmap = roadmap unless roadmap.nil?
+
     roadmap ||= @roadmap
     while @product.roadmaps.size > 1 && roadmap == @roadmap
       roadmap = @product.roadmaps.shuffle.first

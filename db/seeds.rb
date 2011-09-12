@@ -118,7 +118,7 @@ p6 = Product.create(
     OperationTime.new(:machine => m9, :time => 482)
   ],
   :roadmaps => [
-    Roadmap.new(:machines => [m2, m4, m5, m6, m7, m8. m9]),
+    Roadmap.new(:machines => [m2, m4, m5, m6, m7, m8, m9]),
     Roadmap.new(:machines => [m1, m3, m6, m7, m8, m9])
   ]
 )
@@ -179,8 +179,10 @@ p9 = Product.create(
     Roadmap.new(:machines => [m2, m4, m6, m7, m8, m9])
   ]
 )
+
 =end
 
+=begin
 m1 = Machine.create(:name => 'm1')
 m2 = Machine.create(:name => 'm2')
 m3 = Machine.create(:name => 'm3')
@@ -237,3 +239,5 @@ p3 = Product.create(
     Roadmap.new(:machines => [m3, m4, m5, m6]),
   ]
 )
+=end
+
