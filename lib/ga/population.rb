@@ -24,4 +24,3 @@ class Population < Array
     Population.new :chromosomes => self.map(&:clone)
   end
 end
-

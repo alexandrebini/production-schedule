@@ -82,4 +82,3 @@ class GA
   end
 
 end
-

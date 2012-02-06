@@ -3,15 +3,15 @@ require "spec_helper"
 describe Gene do
 
   it 'have product' do
-    lambda{ Gene.new(:product => nil, :roadmap => Roadmap.make) }.should raise_error
+    lambda{ Gene.new(:product => nil, :roadmap => Fabricate(:roadmap)) }.should raise_error
   end
 
   it 'have roadmap' do
-    lambda{ Gene.new(:product => Product.make, :roadmap => nil) }.should raise_error
+    lambda{ Gene.new(:product => Fabricate(:product), :roadmap => nil) }.should raise_error
   end
 
   it 'can be viewed as an array' do
-    product = Product.make!
+    product = Fabricate(:product)
     roadmap = product.roadmaps.first
 
     gene = Gene.new(:product => product, :roadmap => roadmap)
@@ -19,7 +19,7 @@ describe Gene do
   end
 
   it 'is cloneable' do
-    first_gene = Gene.new(:product => Product.make, :roadmap => Roadmap.make)
+    first_gene = Gene.new(:product => Fabricate(:product), :roadmap => Fabricate(:roadmap))
     second_gene = first_gene.clone
     first_gene.should_not == second_gene
     first_gene.object_id.should_not == second_gene.object_id
@@ -27,7 +27,7 @@ describe Gene do
 
   context 'swap' do
     before(:each) do
-      @product = Product.make!
+      @product = Fabricate(:product)
       @gene = @product.to_gene
     end
 
@@ -47,7 +47,7 @@ describe Gene do
     end
 
     it 'keep the same roadmap if product has only one roadmap' do
-      @product = Product.make!(:roadmaps => [Roadmap.make])
+      @product = Fabricate(:product, :roadmaps => [Fabricate.build(:roadmap)])
       @gene = @product.to_gene
 
       before_swap = @gene.roadmap
@@ -57,4 +57,3 @@ describe Gene do
   end
 
 end
-

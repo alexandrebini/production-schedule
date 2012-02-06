@@ -3,24 +3,24 @@ require "spec_helper"
 describe Chromosome do
   context 'intercalary in the right order' do
     before(:each) do
-      @m1 = Machine.make!
-      @m2 = Machine.make!
-      @m3 = Machine.make!
+      @m1 = Fabricate(:machine)
+      @m2 = Fabricate(:machine)
+      @m3 = Fabricate(:machine)
 
-      @p1 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [@m1, @m2, @m3])]
-      @p2 = Product.make :operation_times => [], :roadmaps => [Roadmap.make(:machines => [@m2, @m1, @m3])]
+      @p1 = Fabricate :product, :operation_times => [], :roadmaps => [Fabricate(:roadmap, :machines => [@m1, @m2, @m3])]
+      @p2 = Fabricate :product, :operation_times => [], :roadmaps => [Fabricate(:roadmap, :machines => [@m2, @m1, @m3])]
     end
 
     it 'for linear times' do
       chromosome = Chromosome.new :genes =>[@p1, @p2].map(&:to_gene)
 
-      OperationTime.make! :product => @p1, :machine => @m1, :time => 100
-      OperationTime.make! :product => @p1, :machine => @m2, :time => 100
-      OperationTime.make! :product => @p1, :machine => @m3, :time => 100
+      Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 100
+      Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 100
+      Fabricate :operation_time, :product => @p1, :machine => @m3, :time => 100
 
-      OperationTime.make! :product => @p2, :machine => @m2, :time => 100
-      OperationTime.make! :product => @p2, :machine => @m1, :time => 100
-      OperationTime.make! :product => @p2, :machine => @m3, :time => 100
+      Fabricate :operation_time, :product => @p2, :machine => @m2, :time => 100
+      Fabricate :operation_time, :product => @p2, :machine => @m1, :time => 100
+      Fabricate :operation_time, :product => @p2, :machine => @m3, :time => 100
 
       chromosome.schedule[0].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 100 }
       chromosome.schedule[1].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 100 }
@@ -33,13 +33,13 @@ describe Chromosome do
     it 'for intermediate times' do
       chromosome = Chromosome.new :genes =>[@p2, @p1].map(&:to_gene)
 
-      OperationTime.make! :product => @p1, :machine => @m1, :time => 150
-      OperationTime.make! :product => @p1, :machine => @m2, :time => 150
-      OperationTime.make! :product => @p1, :machine => @m3, :time => 100
+      Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 150
+      Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 150
+      Fabricate :operation_time, :product => @p1, :machine => @m3, :time => 100
 
-      OperationTime.make! :product => @p2, :machine => @m1, :time => 100
-      OperationTime.make! :product => @p2, :machine => @m2, :time => 50
-      OperationTime.make! :product => @p2, :machine => @m3, :time => 100
+      Fabricate :operation_time, :product => @p2, :machine => @m1, :time => 100
+      Fabricate :operation_time, :product => @p2, :machine => @m2, :time => 50
+      Fabricate :operation_time, :product => @p2, :machine => @m3, :time => 100
 
       chromosome.schedule[0].should == { :product_id => @p2.id, :machine_id => @m2.id, :start_at => 0,   :end_at => 50 }
       chromosome.schedule[1].should == { :product_id => @p1.id, :machine_id => @m1.id, :start_at => 0,   :end_at => 150 }
@@ -55,13 +55,13 @@ describe Chromosome do
   end
 
   it 'should be able to generate a random' do
-    2.times{ Product.make! }
+    2.times{ Fabricate(:product) }
     #lambda{ Chromosome.random }.should_not raise_error
     Chromosome.random
   end
 
   it 'have a gene for each product' do
-    products_ids = Array.new(3){ Product.make! }.map(&:id)
+    products_ids = Array.new(3){ Fabricate(:product) }.map(&:id)
 
     chromosome = Chromosome.random
     chromosome.genes.each do |gene|
@@ -70,21 +70,21 @@ describe Chromosome do
   end
 
   it 'can be viewed as an array' do
-    2.times{ Product.make! }
+    2.times{ Fabricate(:product) }
     chromosome = Chromosome.random
     lambda{ chromosome.to_a }.should_not raise_error
   end
 
   it 'should be able to get fitness' do
-    2.times{ Product.make! }
+    2.times{ Fabricate(:product) }
     chromosome = Chromosome.random
     chromosome.fitness
     #lambda{ chromosome.fitness }.should_not raise_error
   end
 
   it 'is mutable' do
-    2.times{ Product.make! }
-    5.times{ Roadmap.make!(:product => Product.random.first) }
+    2.times{ Fabricate(:product) }
+    5.times{ Fabricate(:roadmap, :product => Product.random.first) }
 
     chromosome = Chromosome.random
     chromosome.mutate(100)
@@ -94,7 +94,7 @@ describe Chromosome do
   end
 
   it 'is crossable' do
-    3.times{ Product.make! }
+    3.times{ Fabricate(:product) }
 
     chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
     chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )
@@ -116,14 +116,14 @@ describe Chromosome do
   end
 
   it 'should be able to find gene by product' do
-    2.times{ Product.make! }
+    2.times{ Fabricate(:product) }
     chromosome = Chromosome.random
     gene = chromosome.genes.last
     chromosome.find_by_product_id(gene.product.id).should == gene
   end
 
   it 'is cloneable' do
-    2.times{ Product.make! }
+    2.times{ Fabricate(:product) }
     first_chromosome = Chromosome.random
     second_chromosome = first_chromosome.clone
 
@@ -133,9 +133,8 @@ describe Chromosome do
     for first_chromosome_gene in first_chromosome.genes
       for second_chromosome_gene in second_chromosome.genes
         first_chromosome_gene.should_not == second_chromosome_gene
-        first_chromosome_gene.object_id.should_not == second_chromosome_gene.object_id
+        first_chromosome_gene.object_id.should_not == second_chromosome_gene.object_id     
       end
     end
   end
 end
-

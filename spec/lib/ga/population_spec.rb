@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Population do
   before(:each) do
-    3.times{ Product.make! }
+    3.times{ Fabricate(:product) }
 
     @chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
     @chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )

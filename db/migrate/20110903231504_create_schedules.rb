@@ -7,4 +7,3 @@ class CreateSchedules < ActiveRecord::Migration
     add_index :schedules, :schedule_training_id
   end
 end
-

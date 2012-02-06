@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(:version => 20110903231516) do
   create_table "machines", :force => true do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "operation_times", :force => true do |t|
@@ -33,14 +33,14 @@ ActiveRecord::Schema.define(:version => 20110903231516) do
   create_table "products", :force => true do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "roadmaps", :force => true do |t|
     t.integer  "product_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "roadmaps", ["product_id"], :name => "index_roadmaps_on_product_id"

@@ -28,4 +28,3 @@ class Gene
   end
 
 end
-

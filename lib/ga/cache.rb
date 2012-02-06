@@ -39,8 +39,6 @@ class Cache
     end
   end
 
-
-
   attr_reader :products, :operation_times
 
   def initialize
@@ -57,4 +55,3 @@ class Cache
   end
 
 end
-

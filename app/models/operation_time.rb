@@ -8,4 +8,3 @@ class OperationTime < ActiveRecord::Base
   validates_numericality_of :time, :greater_than => 0
   validates_uniqueness_of :machine_id, :scope => :product_id
 end
-

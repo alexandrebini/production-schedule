@@ -1,7 +1,8 @@
 class CreateOperationTimes < ActiveRecord::Migration
   def change
     create_table :operation_times do |t|
-      t.references :product, :machine
+      t.references :product
+      t.references :machine
       t.integer :time
     end
     add_index :operation_times, :product_id
@@ -9,4 +10,3 @@ class CreateOperationTimes < ActiveRecord::Migration
     add_index :operation_times, [:product_id, :machine_id]
   end
 end
-

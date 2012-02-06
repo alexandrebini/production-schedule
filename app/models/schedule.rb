@@ -1,6 +1,7 @@
 class Schedule < ActiveRecord::Base
+  
   # associations
-  belongs_to :training, :class_name => 'ScheduleTraining'
+  belongs_to :training, :class_name => 'ScheduleTraining', :foreign_key => 'schedule_training_id'
   has_many :operations, :class_name => 'ScheduleOperation'
 
   # validations
@@ -37,4 +38,3 @@ class Schedule < ActiveRecord::Base
   end
 
 end
-

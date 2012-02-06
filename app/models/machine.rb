@@ -1,6 +1,6 @@
 class Machine < ActiveRecord::Base
   # associations
-  has_and_belongs_to_many :rodamaps, :join_table => 'roadmaps_machines'
+  has_and_belongs_to_many :roadmaps, :join_table => 'roadmaps_machines'
   has_many :operation_times
   has_many :products, :through => :operation_times
 
@@ -10,4 +10,3 @@ class Machine < ActiveRecord::Base
   # scopes
   scope :random, :order => 'RAND()'
 end
-

@@ -84,7 +84,6 @@ class Chromosome
     @schedule
   end
 
-
   def operations_of_machine(machine_id)
     @schedule.find_all{ |r| r[:machine_id] == machine_id }
   end
@@ -102,4 +101,3 @@ class Chromosome
   end
 
 end
-

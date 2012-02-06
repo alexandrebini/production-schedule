@@ -22,4 +22,3 @@ describe Schedule do
   end
 
 end
-
