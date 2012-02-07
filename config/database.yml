@@ -18,6 +18,6 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: production_schedule_production
+  database: production_schedule_development
   pool: 10  
   username: root

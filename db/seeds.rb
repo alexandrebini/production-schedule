@@ -1,4 +1,3 @@
-=begin
 m1 = Machine.create(:name => 'm1')
 m2 = Machine.create(:name => 'm2')
 m3 = Machine.create(:name => 'm3')
@@ -180,8 +179,6 @@ p9 = Product.create(
   ]
 )
 
-=end
-
 =begin
 m1 = Machine.create(:name => 'm1')
 m2 = Machine.create(:name => 'm2')
@@ -240,4 +237,3 @@ p3 = Product.create(
   ]
 )
 =end
-
