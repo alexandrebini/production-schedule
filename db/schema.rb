@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110903231516) do
+ActiveRecord::Schema.define(:version => 20120229123746) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -29,6 +29,24 @@ ActiveRecord::Schema.define(:version => 20110903231516) do
   add_index "operation_times", ["machine_id"], :name => "index_operation_times_on_machine_id"
   add_index "operation_times", ["product_id", "machine_id"], :name => "index_operation_times_on_product_id_and_machine_id"
   add_index "operation_times", ["product_id"], :name => "index_operation_times_on_product_id"
+
+  create_table "paths", :force => true do |t|
+    t.integer "origin_id"
+    t.integer "target_id"
+    t.integer "distance"
+  end
+
+  add_index "paths", ["origin_id"], :name => "index_paths_on_origin_id"
+  add_index "paths", ["target_id"], :name => "index_paths_on_target_id"
+
+  create_table "positions", :force => true do |t|
+    t.string  "name"
+    t.integer "schema_id"
+    t.integer "machine_id"
+  end
+
+  add_index "positions", ["machine_id"], :name => "index_positions_on_machine_id"
+  add_index "positions", ["schema_id"], :name => "index_positions_on_schema_id"
 
   create_table "products", :force => true do |t|
     t.string   "name"
@@ -89,5 +107,11 @@ ActiveRecord::Schema.define(:version => 20110903231516) do
   end
 
   add_index "schedules", ["schedule_training_id"], :name => "index_schedules_on_schedule_training_id"
+
+  create_table "schemas", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
 end
