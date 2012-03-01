@@ -6,6 +6,6 @@ describe Schema do
   end
   
   it 'should have a name' do
-    Fabricate(:schema, :name => nil).should_not be_valid
+    Fabricate.build(:schema, :name => nil).should_not be_valid
   end
 end
