@@ -23,4 +23,12 @@ describe Path do
     Fabricate.build(:path, :distance => 100).should be_valid
     Fabricate.build(:path, :distance => 101).should_not be_valid
   end
+  
+  it 'should be able to get path to a position' do
+    position = Fabricate(:position)
+    path = Fabricate(:path, :origin => position)
+    path_to_position = Path.to_position(position.id).first
+    path_to_position.should == path
+    [path_to_position.origin, path_to_position.target].should include(position)
+  end
 end

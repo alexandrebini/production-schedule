@@ -1,12 +1,11 @@
 # From http://theory.stanford.edu/~amitp/game-programming/a-star-flash/Pathfinder.as
 
 class PathFinder
+  INFINITY = 1 << 32
+  
   # Start end Goal positions
   attr_reader :start, :goal
-  
-  # Alpha can be between 0 (BFS) and 1 (Dijkstra's), with 0.5 being A*
-  attr_reader :alpha
-  
+    
   # The OPEN set stores the subset of objects in 'visited'
   # that are currently open; we use an unsorted list.
   attr_reader :open
@@ -14,77 +13,50 @@ class PathFinder
   # The path array stores the final path, once it's found
   attr_reader :path
   
-  def initialize(schema, start, goal)
+  def initialize(start, goal)
     @start, @goal = start, goal
-    @alpha = 0.4999
-    @visited = {}
-    @open = []
-    @path = []
-    start
-    find_path
+    @visited = []
+
+    @open = [{ :position => @start, :parent => nil, :cost_from_start => 0 }]
+    
+    @path = [find]
+    begin
+      @path << @path.last[:parent]
+    end while @path.last[:parent]
+    @path.reverse!
   end
   
-  def start
-    initial_visited = {
-      :position => @start,
-      :open => true,
-      :closed => false,
-      :parent => nil,
-      :cost_from_start => 0,
-      :cost_to_goal => ,
-      :total_cost => 0
-    }
-    initial_visited[:total_cost] = total_cost_of(initial_visited)
-    @open.push initial_visited
-  end
-  
-  def find_path
+  def find
     while @open.size > 0
-      open.sort_by!{ |r| r.total_cost }
+      @open.sort_by!{ |r| r[:cost_from_start] }
       best = open.shift
-      best[:open] = false
+      @visited.push best
       
-      return if best == goal
+      return best if best[:position] == goal
       
       for position in best[:position].neighbors
-        current_cost = best[:position].cost_to(position)
-
-        node = {
-          :position => position,
-          :open => false,
-          :closed => false,
-          :parent => best,
-          :cost_from_start => 1.0/0, # Infinity
-          :cost_to_goal => 0,
-          :total_cost => 0
-        }
+        next if @visited.find{ |r| r[:position] == position }
         
-        # We'll consider this node if the new cost is better
-        # than the old cost. The old cost starts at Infinity
-        # so it's always better the first time we see this node.
-        if best[:cost_from_start] + current_cost <  node[:cost_from_start]
-          unless node[:open]
-            node[:open] = true
-            @open.push(node)
-          end
-          
-          node[:cost_from_start] = best[:cost_from_start] + current_cost
-          node[:cost_to_goal] =
-          node[:total_cost] = total_cost_of(node)
-        end
+        path = best[:position].path_to(position)
+        
+        @open.push({
+          :position => position,
+          :parent => best,
+          :path => path,
+          :cost_from_start => best[:cost_from_start] + path.distance
+        })
       end
        
     end
   end
   
-  def total_cost_of(node)
-    (@alpha * node[:cost_from_start] + (1-@alpha)*node[:total_cost]) / [@alpha, 1-@alpha].max
+  def total_cost
+    @path.last[:cost_from_start]
   end
   
   class << self
-    
-    def find(schema, start, goal)
+    def find(start, goal)
+      PathFinder.new(start, goal)
     end
-    
   end
 end
