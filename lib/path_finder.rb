@@ -19,11 +19,8 @@ class PathFinder
 
     @open = [{ :position => @start, :parent => nil, :cost_from_start => 0 }]
     
-    @path = [find]
-    begin
-      @path << @path.last[:parent]
-    end while @path.last[:parent]
-    @path.reverse!
+    mount_path(find)
+    print
   end
   
   def find
@@ -48,6 +45,29 @@ class PathFinder
       end
        
     end
+  end
+  
+  def mount_path(winner)
+    @path = [winner]
+    begin
+      @path << @path.last[:parent]
+    end while @path.last[:parent]
+    @path.reverse!
+  end
+  
+  def print
+    puts "From: #{@start.id} (#{@start.name})  To: #{@goal.id} (#{@goal.name})"
+    @path.each_with_index do |node, index|
+      next unless node[:parent]
+      output = "=> #{index} From: #{node[:parent][:position].id} (#{node[:parent][:position].name})\t"
+      output+= "Via Path: #{node[:path].id}\t"
+      output+= "To: #{node[:position].id} (#{node[:position].name})\t"
+      output+= "Path Cost: #{node[:path].distance}\t"
+      output+= "Total Cost: #{node[:cost_from_start]}"
+      puts output
+    end
+    puts "=> Total Cost: #{total_cost}"
+    nil
   end
   
   def total_cost
