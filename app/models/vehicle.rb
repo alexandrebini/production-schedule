@@ -5,4 +5,14 @@ class Vehicle < ActiveRecord::Base
   
   # scopes
   scope :random, :order => 'RAND()'
+  
+  # others
+  def time_to(distance_in_meters)
+    distance_in_meters / speed_in_meters_per_minute
+  end
+  
+  def speed_in_meters_per_minute
+    (speed.to_f/60) * 1000
+  end
+  
 end
