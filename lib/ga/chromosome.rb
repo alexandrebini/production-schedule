@@ -1,22 +1,21 @@
 class Chromosome
-  attr_reader :genes, :fitness
+  attr_reader :genes, :fitness, :schema
   attr_reader :cache, :schedule
 
   def initialize(args={})
     args.each { |k,v| instance_variable_set("@#{k}", v) unless v.nil? }
-    raise ArgumentError.new("genes are nil") if @genes.nil?
+    raise ArgumentError.new('genes are nil') if @genes.nil?
     @cache ||= Cache.new
     @cache.add_products @genes.map(&:product)
     @schedule = []
   end
 
   def self.random(args={})
-    products = args[:products] || Product.all
-    Chromosome.new :genes => products.shuffle.map(&:to_gene), :cache => args[:cache]
-  end
-
-  def to_a
-    @genes.map(&:to_a).flatten
+    products = args[:products] || Product.all.shuffle
+    genes = products.map do |product|
+      Gene.new(:product => product, :roadmap => product.roadmaps.shuffle.first, :schema => args[:schema])
+    end
+    Chromosome.new :genes => genes, :schema => args[:schema], :cache => args[:cache]
   end
 
   def fitness

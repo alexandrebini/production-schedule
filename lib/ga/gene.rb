@@ -1,15 +1,16 @@
 class Gene
-  attr_reader :product, :roadmap
+  require "#{Rails.root}/lib/ga/transport"
+  
+  attr_reader :product, :roadmap, :transport
 
   def initialize(args={})
-    raise ArgumentError.new("product is nil") if args[:product].nil?
-    raise ArgumentError.new("roadmap is nil") if args[:roadmap].nil?
+    raise ArgumentError.new('product is nil') if args[:product].nil?
+    raise ArgumentError.new('roadmap is nil') if args[:roadmap].nil?
     @product = args[:product]
     @roadmap = args[:roadmap]
-  end
-
-  def to_a
-    [@product.id, @roadmap.id]
+    unless args[:schema].nil?
+      @transport = Transport.new(:roadmap => @roadmap, :schema => args[:schema])
+    end
   end
 
   # Gene Class

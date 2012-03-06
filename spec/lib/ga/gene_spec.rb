@@ -2,6 +2,10 @@ require "spec_helper"
 
 describe Gene do
 
+  it 'have a valid generator' do
+    lambda{ Fabricate(:gene) }.should_not raise_error
+  end
+  
   it 'have product' do
     lambda{ Gene.new(:product => nil, :roadmap => Fabricate(:roadmap)) }.should raise_error
   end
@@ -10,12 +14,9 @@ describe Gene do
     lambda{ Gene.new(:product => Fabricate(:product), :roadmap => nil) }.should raise_error
   end
 
-  it 'can be viewed as an array' do
-    product = Fabricate(:product)
-    roadmap = product.roadmaps.first
-
-    gene = Gene.new(:product => product, :roadmap => roadmap)
-    gene.to_a.should == [product.id, roadmap.id]
+  it 'transport is not required' do
+    gene = Gene.new(:product => Fabricate(:product), :roadmap => Fabricate(:roadmap), :schema => nil)
+    gene.transport.should be_nil
   end
 
   it 'is cloneable' do
@@ -28,7 +29,7 @@ describe Gene do
   context 'swap' do
     before(:each) do
       @product = Fabricate(:product)
-      @gene = @product.to_gene
+      @gene = Gene.new(:product => @product, :roadmap => @product.roadmaps.first)
     end
 
     it 'should be able to swap the roadmap' do
@@ -48,7 +49,7 @@ describe Gene do
 
     it 'keep the same roadmap if product has only one roadmap' do
       @product = Fabricate(:product, :roadmaps => [Fabricate.build(:roadmap)])
-      @gene = @product.to_gene
+      @gene = Gene.new(:product => @product, :roadmap => @product.roadmaps.first)
 
       before_swap = @gene.roadmap
       @gene.swap_roadmap!

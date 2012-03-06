@@ -1,8 +1,8 @@
-# From http://theory.stanford.edu/~amitp/game-programming/a-star-flash/Pathfinder.as
+# Dijkstra's algorithm
+# http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+# Reference: http://blog.linkedin.com/2008/09/19/implementing-di/
 
 class PathFinder
-  INFINITY = 1 << 32
-  
   # Start end Goal positions
   attr_reader :start, :goal
     
@@ -59,14 +59,14 @@ class PathFinder
     puts "From: #{@start.id} (#{@start.name})  To: #{@goal.id} (#{@goal.name})"
     @path.each_with_index do |node, index|
       next unless node[:parent]
-      output = "=> #{index} From: #{node[:parent][:position].id} (#{node[:parent][:position].name})\t"
+      output = " => #{index} From: #{node[:parent][:position].id} (#{node[:parent][:position].name})\t"
       output+= "Via Path: #{node[:path].id}\t"
       output+= "To: #{node[:position].id} (#{node[:position].name})\t"
       output+= "Path Cost: #{node[:path].distance}\t"
       output+= "Total Cost: #{node[:cost_from_start]}"
       puts output
     end
-    puts "=> Total Cost: #{total_cost}"
+    puts " => Total Cost: #{total_cost}"
     nil
   end
   

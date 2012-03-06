@@ -207,9 +207,9 @@ describe GA do
       Fabricate :operation_time, :product => @p2, :machine => @m2, :time => 50
       Fabricate :operation_time, :product => @p2, :machine => @m3, :time => 100
 
-      ga = GA.new(:products => [@p1, @p2], :length => 5, :max_generations => 1)
+      ga = GA.new(:products => [@p1, @p2], :length => 10, :max_generations => 10)
       ga.run
-      ga.population.best.fitness.should == 450
+      ga.population.best.fitness.should == 500
     end
   end
 

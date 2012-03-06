@@ -17,7 +17,7 @@ class GA
     end
     @cache = Cache.new
     @generations = 0
-    @population = Population.new(:length => @length, :products => args[:products], :cache => @cache)
+    @population = Population.new(:length => @length, :products => args[:products], :schema => args[:schema], :cache => @cache)
   end
 
   def run

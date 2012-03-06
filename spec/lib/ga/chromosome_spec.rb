@@ -12,7 +12,7 @@ describe Chromosome do
     end
 
     it 'for linear times' do
-      chromosome = Chromosome.new :genes =>[@p1, @p2].map(&:to_gene)
+      chromosome = Chromosome.random :products => [@p1, @p2]
 
       Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 100
       Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 100
@@ -31,7 +31,7 @@ describe Chromosome do
     end
 
     it 'for intermediate times' do
-      chromosome = Chromosome.new :genes =>[@p2, @p1].map(&:to_gene)
+      chromosome = Chromosome.random :products => [@p2, @p1]
 
       Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 150
       Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 150
@@ -56,8 +56,7 @@ describe Chromosome do
 
   it 'should be able to generate a random' do
     2.times{ Fabricate(:product) }
-    #lambda{ Chromosome.random }.should_not raise_error
-    Chromosome.random
+    lambda{ Chromosome.random }.should_not raise_error
   end
 
   it 'have a gene for each product' do
@@ -67,12 +66,6 @@ describe Chromosome do
     chromosome.genes.each do |gene|
       products_ids.should include(gene.product.id)
     end
-  end
-
-  it 'can be viewed as an array' do
-    2.times{ Fabricate(:product) }
-    chromosome = Chromosome.random
-    lambda{ chromosome.to_a }.should_not raise_error
   end
 
   it 'should be able to get fitness' do
@@ -96,8 +89,8 @@ describe Chromosome do
   it 'is crossable' do
     3.times{ Fabricate(:product) }
 
-    chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
-    chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )
+    chromosome1 = Chromosome.random :products => Product.find_all_by_id([1, 2])
+    chromosome2 = Chromosome.random :products => Product.find_all_by_id([2, 3])
 
     chromosome1_genes = chromosome1.genes.clone
     chromosome2_genes = chromosome2.genes.clone
@@ -133,7 +126,7 @@ describe Chromosome do
     for first_chromosome_gene in first_chromosome.genes
       for second_chromosome_gene in second_chromosome.genes
         first_chromosome_gene.should_not == second_chromosome_gene
-        first_chromosome_gene.object_id.should_not == second_chromosome_gene.object_id     
+        first_chromosome_gene.object_id.should_not == second_chromosome_gene.object_id
       end
     end
   end

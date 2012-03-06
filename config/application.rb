@@ -11,7 +11,6 @@ end
 
 module ProductionSchedule
   class Application < Rails::Application
-    require "#{Rails.root}/lib/path_finder"
     require "#{Rails.root}/lib/ga/ga"
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

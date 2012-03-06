@@ -4,7 +4,9 @@ class Population < Array
     if args[:chromosomes]
       super args[:chromosomes]
     elsif args[:length] && args[:products]
-      super(args[:length]){ Chromosome.random(:products => args[:products], :cache => args[:cache]) }
+      super(args[:length]){
+        Chromosome.random(:products => args[:products], :schema => args[:schema], :cache => args[:cache])
+      }
     end
   end
 

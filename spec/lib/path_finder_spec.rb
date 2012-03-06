@@ -51,6 +51,9 @@ describe PathFinder do
       result = PathFinder.find(@positionA, @positionE)
       result.path.first[:position].should == @positionA
       result.path.last[:position].should == @positionE
+      
+      result.path[1][:path].positions.should include(@positionA)
+      result.path.last[:path].positions.should include(@positionE)
     end
     
   end

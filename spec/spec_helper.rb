@@ -2,11 +2,11 @@ require 'spork'
 
 Spork.prefork do
 
-  ENV["RAILS_ENV"] ||= 'test'
-  require File.expand_path("../../config/environment", __FILE__)
+  ENV['RAILS_ENV'] ||= 'test'
+  require File.expand_path('../../config/environment', __FILE__)
   require 'rspec/rails'
   require 'database_cleaner'
-
+  
   RSpec.configure do |config|
     config.mock_with :rspec
 
@@ -22,6 +22,11 @@ Spork.prefork do
     config.after(:each) do
       DatabaseCleaner.clean
     end
+  end
+  
+  Spork.each_run do
+    Dir.glob("#{Rails.root}/lib/**/*.rb").sort.each { |file| load file }
+    Fabrication.clear_definitions
   end
   
 end

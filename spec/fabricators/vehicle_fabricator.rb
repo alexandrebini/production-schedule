@@ -1,4 +1,4 @@
 Fabricator(:vehicle) do
   name { Faker::Lorem.words.first }
-  distance{ rand(9) + 1 }
+  speed { rand(9) + 1 }
 end

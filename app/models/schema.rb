@@ -9,4 +9,9 @@ class Schema < ActiveRecord::Base
   
   # validations
   validates :name, :presence => true, :uniqueness => true
+  
+  # others
+  def position_of_machine(machine)
+    positions.to_a.find{ |r| r.machine == machine }
+  end
 end

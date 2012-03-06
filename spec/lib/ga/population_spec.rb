@@ -4,8 +4,8 @@ describe Population do
   before(:each) do
     3.times{ Fabricate(:product) }
 
-    @chromosome1 = Chromosome.new(:genes => Product.find_all_by_id([1, 2]).map(&:to_gene) )
-    @chromosome2 = Chromosome.new(:genes => Product.find_all_by_id([2, 3]).map(&:to_gene) )
+    @chromosome1 = Chromosome.random(:products => Product.find_all_by_id([1, 2]))
+    @chromosome2 = Chromosome.random(:products => Product.find_all_by_id([2, 3]))
 
     @population = Population.new(:chromosomes => [@chromosome1, @chromosome2])
   end
@@ -47,4 +47,3 @@ describe Population do
   end
 
 end
-

@@ -14,8 +14,4 @@ describe Product do
     Fabricate.build(:product, :description => Faker::Lorem.paragraph).should be_valid
   end
 
-  it 'should be able to convert to random gene' do
-    product = Fabricate(:product)
-    lambda { product.to_gene }.should_not raise_error
-  end
 end
