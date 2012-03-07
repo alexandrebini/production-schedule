@@ -17,13 +17,6 @@ describe Path do
     Fabricate.build(:path, :distance => nil).should_not be_valid
   end
   
-  it 'distance should be between 1 and 100' do
-    Fabricate.build(:path, :distance => 0).should_not be_valid
-    Fabricate.build(:path, :distance => 1).should be_valid
-    Fabricate.build(:path, :distance => 100).should be_valid
-    Fabricate.build(:path, :distance => 101).should_not be_valid
-  end
-  
   it 'should be able to get path to a position' do
     position = Fabricate(:position)
     path = Fabricate(:path, :origin => position)

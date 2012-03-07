@@ -11,7 +11,7 @@ class Transport
     @vehicle = args[:vehicle] || Vehicle.random.first
   end
   
-  def find_path
+  def paths
     return @paths unless @paths.nil?
     @paths = []
     for machine_pair in machine_pairs
@@ -31,6 +31,26 @@ class Transport
       @machine_pairs << [machine, @roadmap.machines[index+1]]
     end
     @machine_pairs
+  end
+  
+  def path_to(start_machine, goal_machine)
+    paths.find do |r|
+      r.path.first[:position].machine == start_machine && r.path.last[:position].machine == goal_machine
+    end
+  end
+  
+  def time_to(start_machine, goal_machine)
+    @vehicle.time_to distance_to(start_machine, goal_machine)
+  end
+  
+  def distance_to(start_machine, goal_machine)
+    path_to(start_machine, goal_machine).path.sum do |r|
+      if r[:path].nil?
+        0
+      else
+        r[:path].distance
+      end
+    end
   end
   
 end

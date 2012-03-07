@@ -21,6 +21,8 @@ describe Vehicle do
   end
   
   it 'should be able to convert kilometer/hour to meter/minute' do
+    Fabricate.build(:vehicle, :speed => 3).speed_in_meters_per_minute.should == 50
+    Fabricate.build(:vehicle, :speed => 6).speed_in_meters_per_minute.should == 100
     Fabricate.build(:vehicle, :speed => 15).speed_in_meters_per_minute.should == 250
     Fabricate.build(:vehicle, :speed => 30).speed_in_meters_per_minute.should == 500
     Fabricate.build(:vehicle, :speed => 60).speed_in_meters_per_minute.should == 1_000
@@ -34,5 +36,7 @@ describe Vehicle do
     Fabricate.build(:vehicle, :speed => 50).time_to(100_000).should == 120
     # 100km/hour to travel 100 meters
     Fabricate.build(:vehicle, :speed => 60).time_to(100).should == 0.1
+    # 3km/hour to travel 100 meters (1km)
+    Fabricate.build(:vehicle, :speed => 3).time_to(100).should == 2
   end
 end

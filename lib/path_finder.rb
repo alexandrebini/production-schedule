@@ -20,7 +20,7 @@ class PathFinder
     @open = [{ :position => @start, :parent => nil, :cost_from_start => 0 }]
     
     mount_path(find)
-    print
+    #print
   end
   
   def find

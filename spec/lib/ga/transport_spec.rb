@@ -70,11 +70,12 @@ describe Transport do
   
   context '5 positions schema' do
     before(:each) do
-      # A -- B
-      # |\ / |
-      # | C  |
-      # |/  \|
-      # D -- E
+      # A ----- B
+      # | \   / |
+      # |   C   |
+      # |  / \  |
+      # |/    \ |
+      # D ---- E
       @schema = Fabricate(:schema)
       @machineA = Fabricate(:machine)
       @machineB = Fabricate(:machine)
@@ -86,14 +87,14 @@ describe Transport do
       @positionC = Fabricate(:position, :schema => @schema, :machine => @machineC)
       @positionD = Fabricate(:position, :schema => @schema, :machine => @machineD)
       @positionE = Fabricate(:position, :schema => @schema, :machine => @machineE)
-      @pathAB = Fabricate(:path, :origin => @positionA, :target => @positionB)
-      @pathAC = Fabricate(:path, :origin => @positionA, :target => @positionC)
-      @pathAD = Fabricate(:path, :origin => @positionA, :target => @positionD)
-      @pathBC = Fabricate(:path, :origin => @positionB, :target => @positionC)
-      @pathBE = Fabricate(:path, :origin => @positionB, :target => @positionE)
-      @pathCD = Fabricate(:path, :origin => @positionC, :target => @positionD)
-      @pathCE = Fabricate(:path, :origin => @positionC, :target => @positionE)
-      @pathDE = Fabricate(:path, :origin => @positionD, :target => @positionE)
+      @pathAB = Fabricate(:path, :origin => @positionA, :target => @positionB, :distance => 100)
+      @pathAC = Fabricate(:path, :origin => @positionA, :target => @positionC, :distance => 100)
+      @pathAD = Fabricate(:path, :origin => @positionA, :target => @positionD, :distance => 300)
+      @pathBC = Fabricate(:path, :origin => @positionB, :target => @positionC, :distance => 100)
+      @pathBE = Fabricate(:path, :origin => @positionB, :target => @positionE, :distance => 300)
+      @pathCD = Fabricate(:path, :origin => @positionC, :target => @positionD, :distance => 200)
+      @pathCE = Fabricate(:path, :origin => @positionC, :target => @positionE, :distance => 200)
+      @pathDE = Fabricate(:path, :origin => @positionD, :target => @positionE, :distance => 100)
     end
     
     it 'getting a valid transport roadmap' do
@@ -101,7 +102,6 @@ describe Transport do
         :schema => @schema,
         :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineC, @machineD])
       )
-      transport.find_path
       
       pathAC = transport.paths[0]
       pathAC.path.first[:position].should == @positionA
@@ -110,6 +110,27 @@ describe Transport do
       pathCD = transport.paths[1]
       pathCD.path.first[:position].should == @positionC
       pathCD.path.last[:position].should == @positionD
+    end
+    
+    context 'distance and time' do
+      before(:each) do
+        @transport = Transport.new(
+          :schema => @schema,
+          :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineC, @machineD]),
+          :vehicle => Fabricate(:vehicle, :speed => 3)
+        )
+      end
+
+      it 'should be able to get the distance from a machine to other' do
+        @transport.distance_to(@machineA, @machineC).should == 100
+        @transport.distance_to(@machineC, @machineD).should == 200
+      end
+
+      it 'should be able to get the time from a machine to other' do
+        @transport.time_to(@machineA, @machineC).should == 2 #minutes
+        @transport.time_to(@machineC, @machineD).should == 4 #minutes
+      end
+
     end
   end
   
