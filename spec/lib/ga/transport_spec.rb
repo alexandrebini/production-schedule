@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Transport do
   
@@ -19,53 +19,6 @@ describe Transport do
     transport = Transport.new(:roadmap => Fabricate(:roadmap), :schema => Fabricate(:schema), :vehicle => nil)
     lambda{ transport.vehicle }.should_not raise_error
     transport.vehicle.class.should == Vehicle
-  end
-  
-  context 'getting machine pairs' do
-    before(:each) do
-      @schema = Fabricate(:schema)
-      @machineA = Fabricate(:machine)
-      @machineB = Fabricate(:machine)
-      @machineC = Fabricate(:machine)
-      @machineD = Fabricate(:machine)
-      @machineE = Fabricate(:machine)
-    end
-    
-    it 'for 3 machines' do
-      transport = Transport.new(
-        :schema => @schema,
-        :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC])
-      )
-      transport.machine_pairs.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC]
-      ]
-    end
-    
-    it 'for 4 machines' do
-      transport = Transport.new(
-        :schema => @schema,
-        :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC, @machineD])
-      )
-      transport.machine_pairs.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC],
-        [@machineC, @machineD]
-      ]
-    end
-  
-    it 'for 5 machines' do
-      transport = Transport.new(
-        :schema => @schema,
-        :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC, @machineD, @machineE])
-      )
-      transport.machine_pairs.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC],
-        [@machineC, @machineD],
-        [@machineD, @machineE]
-      ]
-    end
   end
   
   context '5 positions schema' do
@@ -103,13 +56,19 @@ describe Transport do
         :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineC, @machineD])
       )
       
-      pathAC = transport.paths[0]
+      transport.find_paths!
+      
+      pathAC = transport[0]
       pathAC.path.first[:position].should == @positionA
       pathAC.path.last[:position].should == @positionC
       
-      pathCD = transport.paths[1]
+      pathCD = transport[1]
       pathCD.path.first[:position].should == @positionC
       pathCD.path.last[:position].should == @positionD
+    end
+    
+    it 'should be able to fit to a new roadmap' do
+      
     end
     
     context 'distance and time' do
@@ -119,6 +78,7 @@ describe Transport do
           :roadmap => Fabricate(:roadmap, :machines => [@machineA, @machineC, @machineD]),
           :vehicle => Fabricate(:vehicle, :speed => 3)
         )
+        @transport.find_paths!
       end
 
       it 'should be able to get the distance from a machine to other' do

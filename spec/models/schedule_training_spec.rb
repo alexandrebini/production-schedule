@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe ScheduleTraining do
   it 'have a valid generator' do

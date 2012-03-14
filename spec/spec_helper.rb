@@ -11,6 +11,7 @@ Spork.prefork do
     config.mock_with :rspec
 
     config.before(:suite) do
+      Dir.glob("#{Rails.root}/lib/**/*.rb").sort.each { |file| load file }
       DatabaseCleaner.strategy = :truncation
       DatabaseCleaner.clean_with(:truncation)
     end
@@ -23,10 +24,9 @@ Spork.prefork do
       DatabaseCleaner.clean
     end
   end
-  
-  Spork.each_run do
-    Dir.glob("#{Rails.root}/lib/**/*.rb").sort.each { |file| load file }
-    Fabrication.clear_definitions
-  end
-  
+    
+end
+
+Spork.each_run do
+  Fabrication.clear_definitions
 end

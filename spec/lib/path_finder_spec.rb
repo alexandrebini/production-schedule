@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe PathFinder do
   context '4 positions schema' do

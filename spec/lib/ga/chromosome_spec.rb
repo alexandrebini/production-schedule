@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Chromosome do
   context 'intercalary in the right order' do
