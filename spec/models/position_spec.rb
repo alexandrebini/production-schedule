@@ -18,9 +18,9 @@ describe Position do
     positionA = Fabricate(:position, :schema => schema)
     positionB = Fabricate(:position, :schema => schema)
     positionC = Fabricate(:position, :schema => schema)
-    pathAB = Fabricate(:path, :origin => positionA, :target => positionB)
-    pathAC = Fabricate(:path, :origin => positionA, :target => positionC)
-    pathBC = Fabricate(:path, :origin => positionB, :target => positionC)
+    pathAB = Fabricate(:segment, :origin => positionA, :target => positionB)
+    pathAC = Fabricate(:segment, :origin => positionA, :target => positionC)
+    pathBC = Fabricate(:segment, :origin => positionB, :target => positionC)
         
     positionA.neighbors.should == [positionB, positionC]
     positionB.neighbors.should == [positionA, positionC]

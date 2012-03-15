@@ -1,4 +1,4 @@
-Fabricator(:path) do
+Fabricator(:segment) do
   origin!(:fabricator => :position)
   target!(:fabricator => :position)
   distance{ rand(99) + 1 }

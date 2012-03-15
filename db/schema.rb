@@ -30,15 +30,6 @@ ActiveRecord::Schema.define(:version => 20120301124348) do
   add_index "operation_times", ["product_id", "machine_id"], :name => "index_operation_times_on_product_id_and_machine_id"
   add_index "operation_times", ["product_id"], :name => "index_operation_times_on_product_id"
 
-  create_table "paths", :force => true do |t|
-    t.integer "origin_id"
-    t.integer "target_id"
-    t.integer "distance"
-  end
-
-  add_index "paths", ["origin_id"], :name => "index_paths_on_origin_id"
-  add_index "paths", ["target_id"], :name => "index_paths_on_target_id"
-
   create_table "positions", :force => true do |t|
     t.string  "name"
     t.integer "schema_id"
@@ -113,6 +104,15 @@ ActiveRecord::Schema.define(:version => 20120301124348) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "segments", :force => true do |t|
+    t.integer "origin_id"
+    t.integer "target_id"
+    t.integer "distance"
+  end
+
+  add_index "segments", ["origin_id"], :name => "index_segments_on_origin_id"
+  add_index "segments", ["target_id"], :name => "index_segments_on_target_id"
 
   create_table "vehicles", :force => true do |t|
     t.string  "name"

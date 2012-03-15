@@ -1,10 +1,10 @@
-class Path < ActiveRecord::Base
+class Segment < ActiveRecord::Base
   # associations
   belongs_to :origin, :class_name => 'Position'
   belongs_to :target, :class_name => 'Position'
   
   scope :to_position, lambda{ |position_id|
-    where("paths.origin_id = #{position_id} OR paths.target_id = #{position_id}")
+    where("segments.origin_id = #{position_id} OR segments.target_id = #{position_id}")
   }
   
   # validations
