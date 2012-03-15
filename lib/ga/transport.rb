@@ -47,8 +47,26 @@ class Transport
   def roadmap=new_roadmap
     current_paths = paths
     current_paths.delete_if do |r|
-      new_roadmap.paths.find{ |m| m.first == r.start && m.last == r.goal }.blank?
+      new_roadmap.paths.find do |machine_pairs| 
+        @schema.position_of_machine(machine_pairs.first) == r.start && 
+        @schema.position_of_machine(machine_pairs.last) == r.goal
+      end.blank?
     end
+    
+    new_roadmap.paths.each_with_index do |machine_pairs, index|
+      start_position = @schema.position_of_machine(machine_pairs.first)
+      goal_position = @schema.position_of_machine(machine_pairs.last)
+      
+      next if current_paths[index].present? && 
+        current_paths[index].start == start_position && 
+        current_paths[index].goal == goal_position
+      
+      puts "passou"
+      current_paths.insert index, PathFinder.find(start_position, goal_position)
+    end
+    
+    @roadmap = new_roadmap
+    @paths = current_paths
   end
   
 end

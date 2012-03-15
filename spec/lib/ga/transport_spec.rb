@@ -109,6 +109,7 @@ describe Transport do
       paths_before = transport.paths.dup
       
       transport.roadmap = Fabricate(:roadmap, :machines => [@machineB, @machineC, @machineD, @machineE])
+      
       transport.paths[0].should == paths_before[1]
       transport.paths[1].should == paths_before[2]
       transport.paths[2].start.should == @positionD
