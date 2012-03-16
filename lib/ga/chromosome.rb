@@ -13,7 +13,7 @@ class Chromosome
   def self.random(args={})
     products = args[:products] || Product.all.shuffle
     genes = products.map do |product|
-      Gene.new(:product => product, :roadmap => product.roadmaps.shuffle.first, :schema => args[:schema])
+      Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema])
     end
     Chromosome.new :genes => genes, :schema => args[:schema], :cache => args[:cache]
   end

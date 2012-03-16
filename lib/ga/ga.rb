@@ -57,7 +57,7 @@ class GA
       # replace the population
       @population = next_population
 
-      puts "#{@generations}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness} \t\t mutation rate: #{@mutation_rate}% \t crossover rate: #{@crossover_rate}%"
+      puts "#{@generations + 1}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness} \t\t mutation rate: #{@mutation_rate}% \t crossover rate: #{@crossover_rate}%"
 
       # increase population counter
       @generations += 1
