@@ -8,7 +8,7 @@ class GA
 
   attr_reader :population, :length, :generations
   attr_reader :mutation_rate, :crossover_rate, :max_generations
-  attr_reader :max_threads, :cache
+  attr_reader :max_threads, :cache, :products
 
   def initialize(args={})
     options = { :length => 40, :mutation_rate => 5, :crossover_rate => 75, :max_generations => 10000, :max_threads => 5 }
@@ -18,6 +18,7 @@ class GA
     @cache = Cache.new
     @generations = 0
     @population = Population.new(:length => @length, :products => args[:products], :schema => args[:schema], :cache => @cache)
+    @length = @population.size
   end
 
   def run
@@ -26,14 +27,10 @@ class GA
       next_population = Population.new
       next_population << @population.best
 
-      operations_per_thread = @length / @max_threads / 2
-
       @max_threads.times.map do
         Thread.new do
 
-          operations_per_thread.times do
-            Thread.current.kill if next_population.size == @length
-
+          while next_population.size < @length
             # selection
             chromosome1, chromosome2 = @population.selection(2)
 
@@ -45,12 +42,12 @@ class GA
             chromosome2.mutate @mutation_rate
 
             # add to next population
-            next_population.push chromosome1 if next_population.size < @length
-            next_population.push chromosome2 if next_population.size < @length
+            next_population.push(chromosome1) if next_population.size < @length && !next_population.include?(chromosome1)
+            next_population.push(chromosome2) if next_population.size < @length && !next_population.include?(chromosome2)
           end
         end
       end.each(&:join)
-
+      
       adjust_rates! @population.fitness, next_population.fitness
 
       # replace the population

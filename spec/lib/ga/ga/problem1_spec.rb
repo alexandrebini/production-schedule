@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GA do
 
-  it 'problem 1: best makespan should be between Morandin (2198) and Sanches (2354)' do
+  it 'problem 1: best makespan should be between Morandin (2.198) and Sanches (2.354)' do
     m1, m2, m3, m4, m5, m6 = Array.new(9){ Fabricate(:machine) }
     p1 = Fabricate(:product,
       :operation_times  => [

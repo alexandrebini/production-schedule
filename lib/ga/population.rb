@@ -5,8 +5,6 @@ class Population < Array
       super args[:chromosomes]
     elsif args[:products]
       super Population.distinct_chromosomes(args)
-    else
-      super args
     end
   end
 

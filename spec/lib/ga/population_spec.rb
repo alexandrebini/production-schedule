@@ -108,9 +108,11 @@ describe Population do
       products = 2.times.map{ Fabricate(:product, :roadmaps => 4.times.map{ Fabricate :roadmap }) }
       population = Population.new(:products => products)
       
-      population.each_with_index do |chromosome, i|  
-        break unless i < population.size-1
-        chromosome.should_not == population[i+1]
+      population.each do |chromosome|
+        population.each do |chromosome2|
+          next if chromosome.object_id == chromosome2.object_id
+          chromosome.should_not == chromosome2
+        end
       end
     end
     

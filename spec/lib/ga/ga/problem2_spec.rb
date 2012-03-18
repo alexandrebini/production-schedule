@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GA do
 
-  it 'problem 2' do
+  it 'problem 2: best makespan should be between Morandin (5.054) and Sanches (5.572)' do
     m1, m2, m3, m4, m5, m6, m7, m8, m9 = Array.new(9){ Fabricate(:machine) }
 
     p1_operations = [ [m1,428], [m2,423], [m3,459], [m4,433], [m5,467], [m6,461], [m7,464], [m8,455], [m9,418] ]
@@ -114,6 +114,7 @@ describe GA do
     )
 
     ga.run
+    #(5_054..5_572).should cover(ga.population.best.fitness)
   end
   
 end
