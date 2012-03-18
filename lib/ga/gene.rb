@@ -28,4 +28,11 @@ class Gene
     Gene.new(:product => @product, :roadmap => @roadmap)
   end
 
+  def == gene
+    if @transport
+      self.product == gene.product && self.roadmap == gene.roadmap && self.transport == gene.transport
+    else
+      self.product == gene.product && self.roadmap == gene.roadmap
+    end
+  end
 end

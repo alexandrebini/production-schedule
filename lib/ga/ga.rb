@@ -35,8 +35,7 @@ class GA
             Thread.current.kill if next_population.size == @length
 
             # selection
-            chromosome1 = @population.selection
-            chromosome2 = @population.selection
+            chromosome1, chromosome2 = @population.selection(2)
 
             # crossover
             chromosome1.crossover chromosome2, @crossover_rate
@@ -58,7 +57,7 @@ class GA
       @population = next_population
 
       puts "#{@generations + 1}/#{@max_generations} \t total: #{population.fitness} \t best: #{population.best.fitness} \t\t mutation rate: #{@mutation_rate}% \t crossover rate: #{@crossover_rate}%"
-
+      
       # increase population counter
       @generations += 1
     end

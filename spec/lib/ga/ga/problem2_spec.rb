@@ -107,13 +107,13 @@ describe GA do
 
     ga = GA.new(
       :products => [p1, p2, p3, p4, p5, p9, p7, p8, p9],
-      :length => 20,
-      :max_generations => 50,
+      :length => 40,
+      :max_generations => 100,
       :mutation_rate => 80,
       :crossover_rate => 80
     )
 
-    ga.run
+    # ga.run
   end
   
 end

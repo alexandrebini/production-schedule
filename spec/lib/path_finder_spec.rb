@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe PathFinder do
+  
+  it 'acts as array' do
+    PathFinder.ancestors.should include(Array)
+  end
+  
   context '4 positions schema' do
     before(:each) do
       # A -- B

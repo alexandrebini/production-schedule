@@ -37,7 +37,7 @@ describe GA do
 
       ga = GA.new(:products => [@p1, @p2], :length => 10, :max_generations => 10)
       ga.run
-      ga.population.best.fitness.should == 500
+      ga.population.best.fitness.should == 450
     end
   end
 

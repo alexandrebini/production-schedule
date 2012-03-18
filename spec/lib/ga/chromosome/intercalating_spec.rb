@@ -12,7 +12,7 @@ describe Chromosome do
     end
 
     it 'for linear times' do
-      chromosome = Chromosome.random :products => [@p1, @p2]
+      chromosome = Chromosome.new :products => [@p1, @p2]
 
       Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 100
       Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 100
@@ -31,7 +31,7 @@ describe Chromosome do
     end
 
     it 'for intermediate times' do
-      chromosome = Chromosome.random :products => [@p2, @p1]
+      chromosome = Chromosome.new :products => [@p2, @p1]
 
       Fabricate :operation_time, :product => @p1, :machine => @m1, :time => 150
       Fabricate :operation_time, :product => @p1, :machine => @m2, :time => 150

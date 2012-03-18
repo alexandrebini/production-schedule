@@ -4,6 +4,13 @@ class Chromosome
 
   def initialize(args={})
     args.each { |k,v| instance_variable_set("@#{k}", v) unless v.nil? }
+  
+    if args[:products]
+      @genes = args[:products].map do |product|
+        Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema])
+      end
+    end
+    
     raise ArgumentError.new('genes are nil') if @genes.nil?
     @cache ||= Cache.new
     @cache.add_products @genes.map(&:product)
@@ -12,10 +19,10 @@ class Chromosome
 
   def self.random(args={})
     products = args[:products] || Product.all.shuffle
-    genes = products.map do |product|
+    genes = products.shuffle.map do |product|
       Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema])
     end
-    Chromosome.new :genes => genes, :schema => args[:schema], :cache => args[:cache]
+    Chromosome.new :genes => genes.shuffle, :schema => args[:schema], :cache => args[:cache]
   end
 
   def fitness
@@ -97,6 +104,14 @@ class Chromosome
 
   def last_operation
     @schedule.sort_by{ |r| r[:end_at] }.last
+  end
+  
+  def == chromosome
+    return false if self.genes.size != chromosome.genes.size
+    self.genes.each_with_index do |r, i|
+      return false unless r == chromosome.genes[i]
+    end
+    return true
   end
 
 end

@@ -40,8 +40,8 @@ describe Chromosome do
   it 'is crossable' do
     3.times{ Fabricate(:product) }
 
-    chromosome1 = Chromosome.random :products => Product.find_all_by_id([1, 2])
-    chromosome2 = Chromosome.random :products => Product.find_all_by_id([2, 3])
+    chromosome1 = Chromosome.new :products => Product.find_all_by_id([1, 2])
+    chromosome2 = Chromosome.new :products => Product.find_all_by_id([2, 3])
 
     chromosome1_genes = chromosome1.genes.clone
     chromosome2_genes = chromosome2.genes.clone
@@ -71,14 +71,28 @@ describe Chromosome do
     first_chromosome = Chromosome.random
     second_chromosome = first_chromosome.clone
 
-    first_chromosome.should_not == second_chromosome
+    first_chromosome.should == second_chromosome
     first_chromosome.object_id.should_not == second_chromosome.object_id
 
-    for first_chromosome_gene in first_chromosome.genes
-      for second_chromosome_gene in second_chromosome.genes
-        first_chromosome_gene.should_not == second_chromosome_gene
-        first_chromosome_gene.object_id.should_not == second_chromosome_gene.object_id
-      end
+    first_chromosome.genes.each_with_index do |gene, i|
+      gene.should == second_chromosome.genes[i]
+      gene.object_id.should_not == second_chromosome.genes[i].object_id
     end
+  end
+  
+  it 'should be able to be compared with another chromosome' do
+    p1, p2 = 2.times.map{ Fabricate(:product) }
+    chromosome1 = Chromosome.new( :genes => [
+      Gene.new(:product => p1, :roadmap => p1.roadmaps.first),
+      Gene.new(:product => p2, :roadmap => p2.roadmaps.first)
+    ])
+    
+    chromosome2 = Chromosome.new( :genes => [
+      Gene.new(:product => p1, :roadmap => p1.roadmaps.first),
+      Gene.new(:product => p2, :roadmap => p2.roadmaps.first)
+    ])
+    
+    chromosome1.should == chromosome2
+    chromosome1.object_id.should_not == chromosome2.object_id
   end
 end

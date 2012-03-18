@@ -22,8 +22,15 @@ describe Gene do
   it 'is cloneable' do
     first_gene = Gene.new(:product => Fabricate(:product), :roadmap => Fabricate(:roadmap))
     second_gene = first_gene.clone
-    first_gene.should_not == second_gene
+    first_gene.should == second_gene
     first_gene.object_id.should_not == second_gene.object_id
+  end
+  
+  it 'should be able to be compared with other gene' do
+    product = Fabricate(:product)
+    roadmap = product.roadmaps.first
+    
+    Gene.new(:product => product, :roadmap => roadmap).should == Gene.new(:product => product, :roadmap => roadmap)
   end
 
   context 'swap' do
