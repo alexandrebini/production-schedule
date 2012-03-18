@@ -71,8 +71,6 @@ describe Population do
   context 'creating distinct chromosomes' do
     
     it 'get the right number of combinations' do
-      pending
-      
       products = 1.times.map{ Fabricate(:product, :roadmaps => 2.times.map{ Fabricate :roadmap }) }
       Population.max_combinations(products).should == 2
       
@@ -107,18 +105,11 @@ describe Population do
     end
     
     it 'for 2 products' do
-      pending
-      #products = 2.times.map{ Fabricate(:product, :roadmaps => 4.times.map{ Fabricate :roadmap }) }
+      products = 2.times.map{ Fabricate(:product, :roadmaps => 4.times.map{ Fabricate :roadmap }) }
       population = Population.new(:products => products)
       
-      
-      population.each_with_index do |chromosome, i|
-        
-        p chromosome, population[i+1]
-        puts
-        
-        break unless i < population.size
-        
+      population.each_with_index do |chromosome, i|  
+        break unless i < population.size-1
         chromosome.should_not == population[i+1]
       end
     end
