@@ -106,7 +106,7 @@ describe GA do
 
 
     ga = GA.new(
-      :products => [p1, p2, p3, p4, p5, p9, p7, p8, p9],
+      :products => [p1, p2, p3, p4, p5, p6, p7, p8, p9],
       :length => 40,
       :max_generations => 100,
       :mutation_rate => 40,
@@ -114,7 +114,7 @@ describe GA do
     )
 
     ga.run
-    #(5_054..5_572).should cover(ga.population.best.fitness)
+    (5_054..5_572).should cover(ga.population.best.fitness)
   end
   
 end
