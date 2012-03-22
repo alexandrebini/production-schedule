@@ -11,6 +11,8 @@ class PathFinder < Array
   attr_reader :open
   
   def initialize(start, goal)
+    start = Position.find(start) unless start.is_a?(Position)
+    goal = Position.find(goal) unless goal.is_a?(Position)
     @start, @goal = start, goal
     @visited = []
 
@@ -70,7 +72,7 @@ class PathFinder < Array
   def total_cost
     self.last[:cost_from_start]
   end
-  
+    
   class << self
     def find(start, goal)
       PathFinder.new(start, goal)

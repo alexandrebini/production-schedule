@@ -1,15 +1,16 @@
 class Gene
   require "#{Rails.root}/lib/ga/transport"
   
-  attr_reader :product, :roadmap, :transport
+  attr_reader :product, :roadmap, :transport, :vehicle
 
   def initialize(args={})
     raise ArgumentError.new('product is nil') if args[:product].nil?
     raise ArgumentError.new('roadmap is nil') if args[:roadmap].nil?
     @product = args[:product]
     @roadmap = args[:roadmap]
+    @vehicle = args[:vehicle] || Vehicle.all.sample
     unless args[:schema].nil?
-      @transport = Transport.new(:roadmap => @roadmap, :schema => args[:schema], :vehicle => args[:vehicle])
+      @transport = Transport.new(:roadmap => @roadmap, :schema => args[:schema], :vehicle => @vehicle)
     end
   end
 

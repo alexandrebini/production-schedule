@@ -30,8 +30,12 @@ class Transport
     end
   end
   
-  def time_to(start_machine, goal_machine)
-    @vehicle.time_to distance_to(start_machine, goal_machine)
+  def time_to(args)
+    if args.is_a?(PathFinder)
+      @vehicle.time_to distance_to(args.start.machine, args.goal.machine)
+    else
+      @vehicle.time_to distance_to(args[:start], args[:goal])
+    end
   end
   
   def distance_to(start_machine, goal_machine)

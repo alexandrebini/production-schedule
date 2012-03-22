@@ -83,6 +83,9 @@ class Chromosome
       for gene in @genes
         machine = gene.roadmap.machines[time]
         next if machine.nil?
+        
+        add_transport_to(gene, time) if using_transport?
+        
         start_at = 0
 
         last_operation_of_machine = operations_of_machine(machine.id).last
@@ -98,6 +101,48 @@ class Chromosome
     end
     @schedule
   end
+  
+  def add_transport_to(gene, index)
+    puts '----add_transport_to  schedule '
+    pp @schedule
+    puts index
+    puts
+    
+    return if index == 0 # first product skip transport
+    current_machine = gene.roadmap.machines[index]
+    previous_machine = gene.roadmap.machines[index-1]
+    last_operation_of_previous_machine = operations_of_machine(previous_machine.id).last
+    last_operation_of_current_machine = operations_of_machine(current_machine.id).last
+    last_operation_of_vehicle = operations_of_vehicle(gene.vehicle.id).last
+    
+    start_at = 0
+    p last_operation_of_previous_machine
+    start_at = last_operation_of_previous_machine[:end_at] if last_operation_of_previous_machine
+    
+    if last_operation_of_vehicle # go back
+      start_at = last_operation_of_vehicle[:end_at]
+      #transport = PathFinder.new(last_operation_of_vehicle[:goal_position_id], @schema.position_of_machine(current_machine))
+      #p transport
+      # last_operation_of_vehicle + transport_from(last_operation_of_vehicle[:goal_position_id], position_of(current_machine) )  
+    end
+    
+    machine_free_at = 0
+    machine_free_at = last_operation_of_current_machine[:end_at] if last_operation_of_current_machine
+    
+    transport_time = gene.transport.time_to(gene.transport.paths[index-1])
+    end_at = start_at + transport_time
+    end_at = machine_free_at if end_at < machine_free_at
+    
+    foo = { 
+      :start_at => start_at, 
+      :end_at => end_at,
+      :vehicle_id => gene.transport.vehicle.id,
+      :product_id => gene.product.id
+    }
+    puts '', '---------------------------foo', foo, ''
+
+    
+  end
 
   def operations_of_machine(machine_id)
     @schedule.find_all{ |r| r[:machine_id] == machine_id }
@@ -105,6 +150,10 @@ class Chromosome
 
   def operations_of_product(product_id)
     @schedule.find_all{ |r| r[:product_id] == product_id }
+  end
+  
+  def operations_of_vehicle(vehicle_id)
+    @schedule.find_all{ |r| r[:vehicle_id] == vehicle_id }
   end
 
   def first_operation
@@ -121,6 +170,10 @@ class Chromosome
       return false unless r == chromosome.genes[i]
     end
     return true
+  end
+  
+  def using_transport?
+    @schema.present?
   end
 
 end
