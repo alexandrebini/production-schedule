@@ -7,7 +7,11 @@ class Chromosome
   
     if args[:products]
       @genes = args[:products].map do |product|
-        Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema])
+        if args[:vehicles]
+          Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema], :vehicle => args[:vehicles].sample)
+        else
+          Gene.new(:product => product, :roadmap => product.roadmaps.sample)
+        end
       end
     end
     
@@ -19,8 +23,13 @@ class Chromosome
 
   def self.random(args={})
     products = args[:products] || Product.all.shuffle
+    vehicles = args[:vehicles] || Vehicle.all.shuffle
     genes = products.shuffle.map do |product|
-      Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema])
+      if args[:schema]
+        Gene.new(:product => product, :roadmap => product.roadmaps.sample, :schema => args[:schema], :vehicle => vehicles.sample)
+      else
+        Gene.new(:product => product, :roadmap => product.roadmaps.sample)
+      end
     end
     Chromosome.new :genes => genes.shuffle, :schema => args[:schema], :cache => args[:cache]
   end

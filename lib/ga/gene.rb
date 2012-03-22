@@ -9,7 +9,7 @@ class Gene
     @product = args[:product]
     @roadmap = args[:roadmap]
     unless args[:schema].nil?
-      @transport = Transport.new(:roadmap => @roadmap, :schema => args[:schema])
+      @transport = Transport.new(:roadmap => @roadmap, :schema => args[:schema], :vehicle => args[:vehicle])
     end
   end
 

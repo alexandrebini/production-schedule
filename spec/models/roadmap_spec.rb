@@ -15,37 +15,37 @@ describe Roadmap do
   
   context 'getting paths (machine pairs)' do
     before(:each) do
-      @machineA = Fabricate(:machine)
-      @machineB = Fabricate(:machine)
-      @machineC = Fabricate(:machine)
-      @machineD = Fabricate(:machine)
-      @machineE = Fabricate(:machine)
+      @machine_a = Fabricate(:machine)
+      @machine_b = Fabricate(:machine)
+      @machine_c = Fabricate(:machine)
+      @machine_d = Fabricate(:machine)
+      @machine_e = Fabricate(:machine)
     end
     
     it 'for 3 machines' do
-      roadmap = Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC])
+      roadmap = Fabricate(:roadmap, :machines => [@machine_a, @machine_b, @machine_c])
       roadmap.paths.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC]
+        [@machine_a, @machine_b],
+        [@machine_b, @machine_c]
       ]
     end
     
     it 'for 4 machines' do
-      roadmap = Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC, @machineD])
+      roadmap = Fabricate(:roadmap, :machines => [@machine_a, @machine_b, @machine_c, @machine_d])
       roadmap.paths.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC],
-        [@machineC, @machineD]
+        [@machine_a, @machine_b],
+        [@machine_b, @machine_c],
+        [@machine_c, @machine_d]
       ]
     end
   
     it 'for 5 machines' do
-      roadmap = Fabricate(:roadmap, :machines => [@machineA, @machineB, @machineC, @machineD, @machineE])
+      roadmap = Fabricate(:roadmap, :machines => [@machine_a, @machine_b, @machine_c, @machine_d, @machine_e])
       roadmap.paths.should == [
-        [@machineA, @machineB],
-        [@machineB, @machineC],
-        [@machineC, @machineD],
-        [@machineD, @machineE]
+        [@machine_a, @machine_b],
+        [@machine_b, @machine_c],
+        [@machine_c, @machine_d],
+        [@machine_d, @machine_e]
       ]
     end
   end

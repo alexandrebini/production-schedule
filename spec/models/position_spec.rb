@@ -15,15 +15,15 @@ describe Position do
   
   it 'should be able to get neighbors' do
     schema = Fabricate(:schema)
-    positionA = Fabricate(:position, :schema => schema)
-    positionB = Fabricate(:position, :schema => schema)
-    positionC = Fabricate(:position, :schema => schema)
-    pathAB = Fabricate(:segment, :origin => positionA, :target => positionB)
-    pathAC = Fabricate(:segment, :origin => positionA, :target => positionC)
-    pathBC = Fabricate(:segment, :origin => positionB, :target => positionC)
+    position_a = Fabricate(:position, :schema => schema)
+    position_b = Fabricate(:position, :schema => schema)
+    position_c = Fabricate(:position, :schema => schema)
+    path_ab = Fabricate(:segment, :origin => position_a, :target => position_b)
+    path_ac = Fabricate(:segment, :origin => position_a, :target => position_c)
+    path_bc = Fabricate(:segment, :origin => position_b, :target => position_c)
         
-    positionA.neighbors.should == [positionB, positionC]
-    positionB.neighbors.should == [positionA, positionC]
-    positionC.neighbors.should == [positionA, positionB]
+    position_a.neighbors.should == [position_b, position_c]
+    position_b.neighbors.should == [position_a, position_c]
+    position_c.neighbors.should == [position_a, position_b]
   end
 end

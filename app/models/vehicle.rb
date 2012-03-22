@@ -8,7 +8,7 @@ class Vehicle < ActiveRecord::Base
   
   # others
   def time_to(distance_in_meters)
-    distance_in_meters / speed_in_meters_per_minute
+    (distance_in_meters / speed_in_meters_per_minute).round(2)
   end
   
   def speed_in_meters_per_minute

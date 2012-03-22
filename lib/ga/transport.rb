@@ -60,8 +60,7 @@ class Transport
       next if current_paths[index].present? && 
         current_paths[index].start == start_position && 
         current_paths[index].goal == goal_position
-      
-      puts "passou"
+
       current_paths.insert index, PathFinder.find(start_position, goal_position)
     end
     
