@@ -96,9 +96,17 @@ class Chromosome
 
         operation_time = @cache.operation_times.of_product_and_machine(gene.product.id, machine.id)
 
-        @schedule << { :product_id => gene.product.id, :machine_id => machine.id, :start_at => start_at, :end_at => start_at + operation_time.time }
+        @schedule << { 
+          :start_at => start_at, 
+          :end_at => start_at + operation_time.time,
+          :product_id => gene.product.id, 
+          :machine_id => machine.id
+        }
       end
     end
+    #puts puts
+    #puts "------final schedule"
+    #pp @schedule
     @schedule
   end
   
@@ -108,18 +116,28 @@ class Chromosome
     puts index
     puts
     
-    return if index == 0 # first product skip transport
     current_machine = gene.roadmap.machines[index]
-    previous_machine = gene.roadmap.machines[index-1]
-    last_operation_of_previous_machine = operations_of_machine(previous_machine.id).last
     last_operation_of_current_machine = operations_of_machine(current_machine.id).last
+      
+    return if last_operation_of_current_machine.nil? # first product skip transport
+    
+    previous_machine = gene.roadmap.machines[index-1]  
+    last_operation_of_previous_machine = operations_of_machine(previous_machine.id).last
+    
     last_operation_of_vehicle = operations_of_vehicle(gene.vehicle.id).last
     
     start_at = 0
-    p last_operation_of_previous_machine
-    start_at = last_operation_of_previous_machine[:end_at] if last_operation_of_previous_machine
+    start_at = last_operation_of_vehicle[:end_at] if last_operation_of_vehicle
     
-    if last_operation_of_vehicle # go back
+    last_operation_of_previous_machine_of_product = @schedule.find_all{ |r| r[:machine_id] == previous_machine.id && r[:product_id] == gene.product.id }.last
+    #start_at = last_operation_of_previous_machine[:end_at] if last_operation_of_previous_machine
+
+    start_at += last_operation_of_previous_machine_of_product[:end_at] if last_operation_of_previous_machine_of_product && last_operation_of_previous_machine_of_product[:end_at] > start_at
+    
+    transport_path = gene.transport.paths[index-1]
+    
+    if last_operation_of_vehicle && last_operation_of_vehicle[:goal_position_id] != transport_path.start.id # go back
+      puts "go back"
       start_at = last_operation_of_vehicle[:end_at]
       #transport = PathFinder.new(last_operation_of_vehicle[:goal_position_id], @schema.position_of_machine(current_machine))
       #p transport
@@ -129,19 +147,23 @@ class Chromosome
     machine_free_at = 0
     machine_free_at = last_operation_of_current_machine[:end_at] if last_operation_of_current_machine
     
-    transport_time = gene.transport.time_to(gene.transport.paths[index-1])
+    
+    transport_time = gene.transport.time_to(transport_path)
     end_at = start_at + transport_time
     end_at = machine_free_at if end_at < machine_free_at
     
-    foo = { 
+    @schedule << { 
       :start_at => start_at, 
       :end_at => end_at,
       :vehicle_id => gene.transport.vehicle.id,
-      :product_id => gene.product.id
+      :product_id => gene.product.id,
+      :start_position_id => transport_path.start.id,
+      :goal_position_id => transport_path.goal.id
     }
-    puts '', '---------------------------foo', foo, ''
-
-    
+    #puts '---------------------------foo', foo
+    puts '------current schedule'
+    pp @schedule
+    puts puts
   end
 
   def operations_of_machine(machine_id)
