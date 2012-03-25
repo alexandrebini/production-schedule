@@ -6,6 +6,12 @@ tmp/
 tmp/*
 .sass-cache/
 Gemfile.lock
-doc/DaniloSipoliSanches/SimultaneousScheduling/bin
 .DS_Store
 
+# Doc
+doc/*.aux
+doc/*.log
+doc/*.maf
+doc/*.mtc
+doc/*.mtc0
+doc/*.synctex.gz

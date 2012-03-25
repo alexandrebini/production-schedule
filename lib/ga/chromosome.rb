@@ -136,17 +136,20 @@ class Chromosome
     
     transport_path = gene.transport.paths[index-1]
     
-    if last_operation_of_vehicle && last_operation_of_vehicle[:goal_position_id] != transport_path.start.id # go back
-      puts "go back"
-      start_at = last_operation_of_vehicle[:end_at]
-      #transport = PathFinder.new(last_operation_of_vehicle[:goal_position_id], @schema.position_of_machine(current_machine))
-      #p transport
-      # last_operation_of_vehicle + transport_from(last_operation_of_vehicle[:goal_position_id], position_of(current_machine) )  
-    end
+    # #if last_operation_of_vehicle && last_operation_of_vehicle[:goal_position_id] != transport_path.start.id # go back
+    # if last_operation_of_vehicle && last_operation_of_vehicle[:goal_position_id] != @schema.position_of_machine(current_machine).id 
+    #   puts "go back"
+    #   start_at = last_operation_of_vehicle[:end_at]
+    #   transport = PathFinder.new(last_operation_of_vehicle[:goal_position_id], @schema.position_of_machine(current_machine))
+    # 
+    #   #p transport
+    #   # last_operation_of_vehicle + transport_from(last_operation_of_vehicle[:goal_position_id], position_of(current_machine) )  
+    # end
     
     machine_free_at = 0
     machine_free_at = last_operation_of_current_machine[:end_at] if last_operation_of_current_machine
     
+    puts "machine_free_at: #{machine_free_at}"
     
     transport_time = gene.transport.time_to(transport_path)
     end_at = start_at + transport_time

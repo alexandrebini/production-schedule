@@ -63,7 +63,8 @@ describe Chromosome do
       }
     end
     
-    it 'same route: p1(ma-mb) p2(ma-ma)' do
+    it 'same route: p1(ma-mb) p2(ma-mb)' do
+      puts "\n\n\n\n\n #teste 2"
       product_1 = Fabricate(:product,
         :operation_times => [
           Fabricate(:operation_time, :machine => @machine_a, :time => 100),
@@ -86,13 +87,13 @@ describe Chromosome do
     
       chromosome = Chromosome.new(:products => [product_1, product_2], :schema => @schema, :vehicles => [@vehicle])
     
-      #       chromosome.schedule[0].should == { 
-      #         :start_at => 0, :end_at => 100, :product_id => product_1.id, :machine_id => @machine_a.id
-      #       }
-      #       
-      #       chromosome.schedule[1].should == { 
-      #         :start_at => 100, :end_at => 200, :product_id => product_2.id, :machine_id => @machine_a.id
-      #       }
+      chromosome.schedule[0].should == { 
+        :start_at => 0, :end_at => 100, :product_id => product_1.id, :machine_id => @machine_a.id
+      }
+      
+      chromosome.schedule[1].should == { 
+        :start_at => 100, :end_at => 200, :product_id => product_2.id, :machine_id => @machine_a.id
+      }
       #       
       #       chromosome.schedule[2].should == { 
       #         :start_at => 100, :end_at => 160, :product_id => product_1.id, :vehicle_id => @vehicle.id,
