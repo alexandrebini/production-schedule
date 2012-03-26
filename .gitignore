@@ -10,9 +10,12 @@ Gemfile.lock
 
 # Doc
 doc/**/*.aux
+doc/**/*.idx
+doc/**/*.lof
 doc/**/*.log
 doc/**/*.maf
 doc/**/*.mtc
 doc/**/*.mtc0
+doc/**/*.toc
 doc/**/*.synctex.gz
 doc/qualification/qualification.pdf
