@@ -10,6 +10,8 @@ Gemfile.lock
 
 # Doc
 doc/**/*.aux
+doc/**/*.bbl
+doc/**/*.blg
 doc/**/*.idx
 doc/**/*.lof
 doc/**/*.log

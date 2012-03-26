@@ -8,23 +8,16 @@
 \usepackage{anysize}
 \marginsize{3cm}{2cm}{2cm}{3cm}
 
-% Use utf-8 encoding for foreign characters
-\usepackage[utf8]{inputenc}
 
-% Setup for fullpage use
-\usepackage{fullpage}
+\usepackage[utf8]{inputenc} % Use utf-8 encoding for foreign characters
+\usepackage{fullpage} % Setup for fullpage use
+\usepackage{boxedminipage} % Surround parts of graphics with box
+\usepackage{listings} % Package for including code in the document
+\usepackage{minitoc} % If you want to generate a toc for each chapter (use with book)
+\usepackage{ifpdf} % This is now the recommended way for checking for PDFLaTeX:
+%\usepackage{natbib} % Bibliography package
+\usepackage[numbib,notlof,notlot,nottoc]{tocbibind}
 
-% Surround parts of graphics with box
-\usepackage{boxedminipage}
-
-% Package for including code in the document
-\usepackage{listings}
-
-% If you want to generate a toc for each chapter (use with book)
-\usepackage{minitoc}
-
-% This is now the recommended way for checking for PDFLaTeX:
-\usepackage{ifpdf}
 
 \ifpdf
 \usepackage[pdftex]{graphicx}
@@ -54,7 +47,5 @@
 \newpage\tableofcontents
 \input{chapter1}
 \input{chapter2}
-
-\bibliographystyle{plain}
-\bibliography{}
+\input{references}
 \end{document}
