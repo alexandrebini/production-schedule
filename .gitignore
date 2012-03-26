@@ -13,6 +13,7 @@ doc/**/*.aux
 doc/**/*.idx
 doc/**/*.lof
 doc/**/*.log
+doc/**/*.lot
 doc/**/*.maf
 doc/**/*.mtc
 doc/**/*.mtc0
