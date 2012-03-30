@@ -19,6 +19,8 @@ doc/**/*.lot
 doc/**/*.maf
 doc/**/*.mtc
 doc/**/*.mtc0
+doc/**/*.nlo
+doc/**/*.out
 doc/**/*.toc
 doc/**/*.synctex.gz
 doc/qualification/qualification.pdf
