@@ -20,24 +20,21 @@
 \usepackage[english,brazilian]{babel} % Suporte para português (hifenação e caracteres especiais)
 
 \ifpdf
-\usepackage[pdftex]{graphicx}
+  \usepackage[pdftex]{graphicx}
+  \DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
 \else
-\usepackage{graphicx}
+  \usepackage{graphicx}
+  \DeclareGraphicsExtensions{.eps, .jpg, .png}
 \fi
+\graphicspath{{./images/}}
+
 
 \title{ Um Sistema Inteligente de Programação Reativa da Produção. }
 \author{ Alexandre Luis Bini }
 
 \date{2012-03-25}
 
-
 \begin{document}
-
-\ifpdf
-\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
-\else
-\DeclareGraphicsExtensions{.eps, .jpg}
-\fi
 
 \maketitle
 

@@ -27,11 +27,59 @@ A seleção escolhe quais indivídos da população serão hábeis a se reproduz
 \subsection{Mecanismos de reprodução}
 Lorem ipsum...
 
-    \subsubsection{Mutação}
-    Lorem ipsum
-
     \subsubsection{Cruzamento}
-    Lorem ipsum
+    Existem diversos operadores de cruzamento, podendo-se destacar:
+    
+    \begin{description}
+      \item[Cruzamento de um ponto] 
+        Um ponto é escolhido e os dados anteriores e posteriores a ele geram dois novos filhos
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{crossover_single_point}
+          \caption{Cruzamento de um ponto}
+        \end{figure}
+      \item[Cruzamento de múltiplos pontos]
+        Diversos pontos são escolhidos e os dados anteriores e posteriores a eles geram novos filhos
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{crossover_multiple_points}
+          \caption{Cruzamento de múltiplos pontos}
+        \end{figure}
+      \item[Cruzamento uniforme]
+        Esse tipo de cruzamento utiliza uma taxa de cruzamento que decide qual pai contribuirá com cada gene dos filhos. 
+        Isso permite que o cruzamento seja feito a nível de gene enquanto nos operadores de um ou múltiplos pontos é 
+        feito por seguimentos.
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{crossover_uniform}
+          \caption{Cruzamento uniforme}
+        \end{figure}
+    \end{description}
 
+    \subsubsection{Mutação}
+    Existem diversos operadores de mutação podendo-se destacar:
+    \begin{description}
+      \item[Mutação de um ponto] 
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{mutation_single_point}
+          \caption{Mutação de um ponto}
+        \end{figure}
+      \item[Mutação de múltiplos pontos]
+
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{mutation_multiple_points}
+          \caption{Mutação de múltiplos pontos}
+        \end{figure}
+      \item[Mutação uniforme]
+
+        \begin{figure}[!ht]
+          \centering
+          \includegraphics{mutation_uniform}
+          \caption{Mutação uniforme}
+        \end{figure}
+    \end{description}
+    
 \subsection{Algorítmos Genéticos Adaptativos (AGA)}
 Lorem ipsum...
