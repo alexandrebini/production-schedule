@@ -57,29 +57,18 @@ Lorem ipsum...
     \end{description}
 
     \subsubsection{Mutação}
-    Existem diversos operadores de mutação podendo-se destacar:
-    \begin{description}
-      \item[Mutação de um ponto] 
-        \begin{figure}[!ht]
-          \centering
-          \includegraphics{mutation_single_point}
-          \caption{Mutação de um ponto}
-        \end{figure}
-      \item[Mutação de múltiplos pontos]
-
-        \begin{figure}[!ht]
-          \centering
-          \includegraphics{mutation_multiple_points}
-          \caption{Mutação de múltiplos pontos}
-        \end{figure}
-      \item[Mutação uniforme]
-
-        \begin{figure}[!ht]
-          \centering
-          \includegraphics{mutation_uniform}
-          \caption{Mutação uniforme}
-        \end{figure}
-    \end{description}
+    
+    A escolha dos genes que sofrerão mutação é feita aleatoria ou probabilisticamente, podendo-se
+    escolher apenas um, múltiplos ou ainda uma máscara dizendo quais deles sofrerão a mutação. 
+    A operação de mutação pode ser feita: na inversão dos bits (flip bit); uso do maior ou menor 
+    valor possível para o gene (boundary); ou na escolha aleatória de um valor entre o maior 
+    e menor possível para o gene (uniform).
+    
+    \begin{figure}[!ht]
+      \centering
+      \includegraphics{mutation}
+      \caption{Mutação}
+    \end{figure}
     
 \subsection{Algorítmos Genéticos Adaptativos (AGA)}
 Lorem ipsum...
